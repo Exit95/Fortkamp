@@ -42,9 +42,9 @@ docker stack deploy -c docker-stack.yml galabau
 
 ### ✅ Korrektes Stack-File (`docker-stack.yml`)
 - Image: `10.1.9.0:5000/test.danapfel-digital.de:latest`
-- Netzwerk: `webproxy`
+- Netzwerk: `public-ingress` (wie alle anderen Services!)
 - Port: `80` (Apache2)
-- Certresolver: `letsencrypt`
+- Certresolver: `myresolver` (wie alle anderen Services!)
 - Stack-Name: `test-danapfel-digital-de`
 - Service-Name: `web`
 
