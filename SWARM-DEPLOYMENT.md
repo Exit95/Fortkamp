@@ -47,13 +47,13 @@ docker build -t galabau-fortkamp:latest .
 ### Schritt 2: Image taggen für Registry
 
 ```bash
-docker tag galabau-fortkamp:latest localhost:5000/galabau-fortkamp:latest
+docker tag galabau-fortkamp:latest 10.1.9.0:5000/galabau-fortkamp:latest
 ```
 
 ### Schritt 3: Image zur Registry pushen
 
 ```bash
-docker push localhost:5000/galabau-fortkamp:latest
+docker push 10.1.9.0:5000/galabau-fortkamp:latest
 ```
 
 ### Schritt 4: Stack deployen
@@ -102,11 +102,11 @@ docker service scale galabau_galabau-fortkamp=3
 ```bash
 # Neu bauen und pushen
 docker build -t galabau-fortkamp:latest .
-docker tag galabau-fortkamp:latest localhost:5000/galabau-fortkamp:latest
-docker push localhost:5000/galabau-fortkamp:latest
+docker tag galabau-fortkamp:latest 10.1.9.0:5000/galabau-fortkamp:latest
+docker push 10.1.9.0:5000/galabau-fortkamp:latest
 
 # Service aktualisieren (Rolling Update)
-docker service update --image localhost:5000/galabau-fortkamp:latest galabau_galabau-fortkamp
+docker service update --image 10.1.9.0:5000/galabau-fortkamp:latest galabau_galabau-fortkamp
 ```
 
 ### Stack entfernen
@@ -167,11 +167,11 @@ git pull
 
 # Image neu bauen und pushen
 docker build -t galabau-fortkamp:latest .
-docker tag galabau-fortkamp:latest localhost:5000/galabau-fortkamp:latest
-docker push localhost:5000/galabau-fortkamp:latest
+docker tag galabau-fortkamp:latest 10.1.9.0:5000/galabau-fortkamp:latest
+docker push 10.1.9.0:5000/galabau-fortkamp:latest
 
 # Rolling Update
-docker service update --image localhost:5000/galabau-fortkamp:latest galabau_galabau-fortkamp
+docker service update --image 10.1.9.0:5000/galabau-fortkamp:latest galabau_galabau-fortkamp
 ```
 
 ## 🐛 Troubleshooting
@@ -190,10 +190,10 @@ docker service ps galabau_galabau-fortkamp --no-trunc
 
 ```bash
 # Prüfe ob Image in Registry ist
-curl http://localhost:5000/v2/_catalog
+curl http://10.1.9.0:5000/v2/_catalog
 
 # Prüfe Image Tags
-curl http://localhost:5000/v2/galabau-fortkamp/tags/list
+curl http://10.1.9.0:5000/v2/galabau-fortkamp/tags/list
 ```
 
 ### Traefik findet Service nicht
@@ -225,7 +225,7 @@ docker network inspect webproxy
 Falls die Registry Authentifizierung benötigt:
 
 ```bash
-docker login localhost:5000
+docker login 10.1.9.0:5000
 ```
 
 ## 💡 Best Practices

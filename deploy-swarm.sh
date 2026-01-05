@@ -14,9 +14,12 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 # Konfiguration
-REGISTRY="localhost:5000"
+# Registry-Adresse (kann über Umgebungsvariable überschrieben werden)
+REGISTRY="${REGISTRY:-10.1.9.0:5000}"
 IMAGE_NAME="galabau-fortkamp"
 STACK_NAME="galabau"
+
+echo -e "${YELLOW}📝 Verwende Registry: ${REGISTRY}${NC}"
 
 # Funktion für Fehlerbehandlung
 error_exit() {
