@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# Galabau Fortkamp - Docker Swarm Deployment Script
+# Dieses Skript baut das Image, pusht es zur Registry und deployed den Stack
+
+set -e
+
+echo "🚀 Starte Docker Swarm Deployment für Galabau Fortkamp..."
+
+# Farben für Output
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+# Konfiguration
+REGISTRY="localhost:5000"
+IMAGE_NAME="galabau-fortkamp"
+STACK_NAME="galabau"
+
+# Funktion für Fehlerbehandlung
+error_exit() {
+    echo -e "${RED}❌ Fehler: $1${NC}" 1>&2
+    exit 1
+}
+
+# Prüfe ob Docker läuft
+if ! docker info > /dev/null 2>&1; then
+    error_exit "Docker läuft nicht. Bitte starte Docker."
+fi
+
+# Prüfe ob Swarm aktiv ist
+if ! docker info | grep -q "Swarm: active"; then
+    error_exit "Docker Swarm ist nicht aktiv. Bitte initialisiere Swarm zuerst."
+fi
+
+echo -e "${YELLOW}🔨 Baue Docker Image...${NC}"
+docker build -t ${IMAGE_NAME}:latest . || error_exit "Docker Build fehlgeschlagen"
+
+echo -e "${YELLOW}🏷️  Tagge Image für Registry...${NC}"
+docker tag ${IMAGE_NAME}:latest ${REGISTRY}/${IMAGE_NAME}:latest
+
+echo -e "${YELLOW}📤 Pushe Image zur Swarm Registry...${NC}"
+docker push ${REGISTRY}/${IMAGE_NAME}:latest || error_exit "Push zur Registry fehlgeschlagen"
+
+echo -e "${YELLOW}🚢 Deploye Stack zu Swarm...${NC}"
+docker stack deploy -c docker-stack.yml ${STACK_NAME} || error_exit "Stack Deployment fehlgeschlagen"
+
+echo -e "${YELLOW}⏳ Warte auf Service...${NC}"
+sleep 5
+
+# Prüfe Service Status
+echo -e "${GREEN}✅ Deployment erfolgreich!${NC}"
+echo -e "${GREEN}🌐 Website ist erreichbar unter: https://test.danapfel-digital.de${NC}"
+echo ""
+echo "📊 Stack Status:"
+docker stack ps ${STACK_NAME}
+echo ""
+echo "📋 Services:"
+docker stack services ${STACK_NAME}
+
+echo ""
+echo "💡 Nützliche Befehle:"
+echo "  - Logs anzeigen: docker service logs -f ${STACK_NAME}_galabau-fortkamp"
+echo "  - Service Status: docker stack services ${STACK_NAME}"
+echo "  - Stack entfernen: docker stack rm ${STACK_NAME}"
+echo "  - Service skalieren: docker service scale ${STACK_NAME}_galabau-fortkamp=3"
+
