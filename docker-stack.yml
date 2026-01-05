@@ -15,8 +15,8 @@ services:
         # Traefik aktivieren
         - "traefik.enable=true"
 
-        # HTTPS Router
-        - "traefik.http.routers.galabau-fortkamp-de.rule=Host(`galabau-fortkamp.de`) || Host(`www.galabau-fortkamp.de`)"
+        # HTTPS Router (nur Hauptdomain, kein www)
+        - "traefik.http.routers.galabau-fortkamp-de.rule=Host(`galabau-fortkamp.de`)"
         - "traefik.http.routers.galabau-fortkamp-de.entrypoints=websecure"
         - "traefik.http.routers.galabau-fortkamp-de.tls=true"
         - "traefik.http.routers.galabau-fortkamp-de.tls.certresolver=myresolver"
