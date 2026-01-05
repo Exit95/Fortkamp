@@ -1,0 +1,52 @@
+---
+import ServiceCard from '../cards/ServiceCard.astro';
+import services from '../../data/services.json';
+
+interface Props {
+  headline?: string;
+  subheadline?: string;
+  limit?: number;
+  showAllLink?: boolean;
+}
+
+const {
+  headline = 'Unsere Leistungen',
+  subheadline = 'Vom ersten Entwurf bis zur dauerhaften Pflege - wir bieten Ihnen alles aus einer Hand.',
+  limit,
+  showAllLink = true
+} = Astro.props;
+
+const displayServices = limit ? services.sort((a, b) => a.order - b.order).slice(0, limit) : services.sort((a, b) => a.order - b.order);
+---
+
+<section class="section bg-neutral-50">
+  <div class="container">
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <h2 class="section-heading">{headline}</h2>
+      <p class="section-subheading mx-auto">{subheadline}</p>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {displayServices.map((service) => (
+        <ServiceCard
+          title={service.title}
+          description={service.shortDescription}
+          image={service.image}
+          href={`/leistungen/${service.slug}/`}
+          features={service.features}
+        />
+      ))}
+    </div>
+
+    {showAllLink && limit && (
+      <div class="text-center mt-10">
+        <a href="/leistungen/" class="btn-outline">
+          Alle Leistungen ansehen
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+    )}
+  </div>
+</section>

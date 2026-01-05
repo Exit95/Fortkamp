@@ -1,0 +1,31 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Seite nicht gefunden"
+  description="Die angeforderte Seite konnte nicht gefunden werden."
+  noIndex={true}
+>
+  <section class="min-h-[70vh] flex items-center justify-center pt-20">
+    <div class="container">
+      <div class="max-w-xl mx-auto text-center">
+        <div class="text-8xl font-bold text-green-600 mb-4">404</div>
+        <h1 class="font-heading text-3xl font-bold text-neutral-900 mb-4">
+          Seite nicht gefunden
+        </h1>
+        <p class="text-neutral-600 mb-8">
+          Die angeforderte Seite existiert leider nicht. Moglicherweise wurde sie verschoben oder geloscht.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/" class="btn-primary">
+            Zur Startseite
+          </a>
+          <a href="/kontakt/" class="btn-outline">
+            Kontakt aufnehmen
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

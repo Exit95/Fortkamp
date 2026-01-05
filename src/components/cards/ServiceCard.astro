@@ -1,0 +1,49 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  image: string;
+  href: string;
+  features?: string[];
+}
+
+const { title, description, image, href, features = [] } = Astro.props;
+---
+
+<a href={href} class="group block card overflow-hidden">
+  <div class="relative h-48 overflow-hidden">
+    <img
+      src={image}
+      alt={title}
+      class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+      loading="lazy"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-neutral-900/60 to-transparent"></div>
+  </div>
+  <div class="p-6">
+    <h3 class="font-heading text-xl font-bold text-neutral-900 mb-2 group-hover:text-green-700 transition-colors">
+      {title}
+    </h3>
+    <p class="text-neutral-600 text-sm mb-4 line-clamp-2">
+      {description}
+    </p>
+    {features.length > 0 && (
+      <ul class="space-y-1">
+        {features.slice(0, 3).map((feature) => (
+          <li class="flex items-center gap-2 text-sm text-neutral-500">
+            <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            <span>{feature}</span>
+          </li>
+        ))}
+      </ul>
+    )}
+    <div class="mt-4 flex items-center gap-2 text-green-600 font-medium text-sm group-hover:text-green-700">
+      <span>Mehr erfahren</span>
+      <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </div>
+  </div>
+</a>

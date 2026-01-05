@@ -1,0 +1,115 @@
+---
+import Layout from '../layouts/Layout.astro';
+import config from '../data/config.json';
+---
+
+<Layout
+  title="Impressum"
+  description="Impressum und rechtliche Angaben von Galabau Fortkamp."
+  noIndex={true}
+>
+  <section class="pt-32 pb-16">
+    <div class="container">
+      <div class="max-w-3xl mx-auto">
+        <h1 class="font-heading text-4xl font-bold text-neutral-900 mb-8">
+          Impressum
+        </h1>
+
+        <div class="prose prose-neutral max-w-none">
+          <h2>Angaben gemas 5 TMG</h2>
+          <p>
+            {config.company.name}<br />
+            {config.contact.address.street}<br />
+            {config.contact.address.zip} {config.contact.address.city}
+          </p>
+
+          <h2>Vertreten durch</h2>
+          <p>{config.company.owner}</p>
+
+          <h2>Kontakt</h2>
+          <p>
+            Telefon: {config.contact.phoneDisplay}<br />
+            E-Mail: {config.contact.email}
+          </p>
+
+          <h2>Umsatzsteuer-ID</h2>
+          <p>
+            Umsatzsteuer-Identifikationsnummer gemas 27 a Umsatzsteuergesetz:<br />
+            DE XXX XXX XXX
+          </p>
+
+          <h2>Berufsbezeichnung und berufsrechtliche Regelungen</h2>
+          <p>
+            Berufsbezeichnung: Garten- und Landschaftsbauer<br />
+            Zustandige Kammer: Landwirtschaftskammer Nordrhein-Westfalen<br />
+            Verliehen in: Deutschland
+          </p>
+
+          <h2>Angaben zur Berufshaftpflichtversicherung</h2>
+          <p>
+            Name und Sitz des Versicherers:<br />
+            [Versicherungsname]<br />
+            [Versicherungsadresse]
+          </p>
+          <p>Geltungsraum der Versicherung: Deutschland</p>
+
+          <h2>EU-Streitschlichtung</h2>
+          <p>
+            Die Europaische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:
+            <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer">
+              https://ec.europa.eu/consumers/odr/
+            </a>
+          </p>
+          <p>Unsere E-Mail-Adresse finden Sie oben im Impressum.</p>
+
+          <h2>Verbraucherstreitbeilegung/Universalschlichtungsstelle</h2>
+          <p>
+            Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer
+            Verbraucherschlichtungsstelle teilzunehmen.
+          </p>
+
+          <h2>Haftung fur Inhalte</h2>
+          <p>
+            Als Diensteanbieter sind wir gemas 7 Abs.1 TMG fur eigene Inhalte auf diesen Seiten nach den
+            allgemeinen Gesetzen verantwortlich. Nach 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht
+            verpflichtet, ubermittelte oder gespeicherte fremde Informationen zu uberwachen oder nach Umstanden
+            zu forschen, die auf eine rechtswidrige Tatigkeit hinweisen.
+          </p>
+          <p>
+            Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen
+            Gesetzen bleiben hiervon unberuhrt. Eine diesbezugliche Haftung ist jedoch erst ab dem Zeitpunkt der
+            Kenntnis einer konkreten Rechtsverletzung moglich. Bei Bekanntwerden von entsprechenden
+            Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.
+          </p>
+
+          <h2>Haftung fur Links</h2>
+          <p>
+            Unser Angebot enthalt Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben.
+            Deshalb konnen wir fur diese fremden Inhalte auch keine Gewahr ubernehmen. Fur die Inhalte der
+            verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.
+          </p>
+
+          <h2>Urheberrecht</h2>
+          <p>
+            Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen
+            Urheberrecht. Die Vervielfaltigung, Bearbeitung, Verbreitung und jede Art der Verwertung auserhalb der
+            Grenzen des Urheberrechtes bedurfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.
+            Downloads und Kopien dieser Seite sind nur fur den privaten, nicht kommerziellen Gebrauch gestattet.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .prose h2 {
+    @apply font-heading text-xl font-bold text-neutral-900 mt-8 mb-4;
+  }
+  .prose p {
+    @apply text-neutral-600 mb-4 leading-relaxed;
+  }
+  .prose a {
+    @apply text-green-600 hover:underline;
+  }
+</style>

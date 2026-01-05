@@ -1,0 +1,102 @@
+---
+import '../styles/global.css';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import config from '../data/config.json';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  noIndex?: boolean;
+  headerVariant?: 'transparent' | 'solid';
+}
+
+const {
+  title,
+  description = config.seo.defaultDescription,
+  image = '/fortkamplogo.jpeg',
+  noIndex = false,
+  headerVariant = 'solid'
+} = Astro.props;
+
+const fullTitle = title ? `${title} | ${config.company.name}` : config.seo.defaultTitle;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": `${Astro.site}#organization`,
+  "name": config.company.name,
+  "alternateName": "Garten- und Landschaftsbau Fortkamp",
+  "description": config.company.description,
+  "url": Astro.site,
+  "telephone": config.contact.phone,
+  "email": config.contact.email,
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": config.contact.address.street,
+    "addressLocality": config.contact.address.city,
+    "postalCode": config.contact.address.zip,
+    "addressRegion": config.contact.address.state,
+    "addressCountry": "DE"
+  },
+  "areaServed": {
+    "@type": "GeoCircle",
+    "geoMidpoint": {
+      "@type": "GeoCoordinates",
+      "latitude": "52.0766",
+      "longitude": "7.0127"
+    },
+    "geoRadius": "30000"
+  },
+  "priceRange": "$$"
+};
+---
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  {noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+  <link rel="canonical" href={canonicalURL} />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/fortkamplogo.jpeg" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonicalURL} />
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={new URL(image, Astro.site)} />
+  <meta property="og:locale" content="de_DE" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={fullTitle} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={new URL(image, Astro.site)} />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet" />
+
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+</head>
+<body class="font-body">
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-green-600 focus:text-white focus:rounded-lg">
+    Zum Hauptinhalt springen
+  </a>
+
+  <Header variant={headerVariant} />
+
+  <main id="main-content">
+    <slot />
+  </main>
+
+  <Footer />
+</body>
+</html>

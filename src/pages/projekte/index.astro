@@ -1,0 +1,50 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProjectCard from '../../components/cards/ProjectCard.astro';
+import CTA from '../../components/sections/CTA.astro';
+import projects from '../../data/projects.json';
+import services from '../../data/services.json';
+
+const serviceMap = Object.fromEntries(services.map(s => [s.id, s.title]));
+const sortedProjects = projects.sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime());
+---
+
+<Layout
+  title="Unsere Projekte"
+  description="Entdecken Sie unsere abgeschlossenen Garten- und Landschaftsbauprojekte in Ahaus und Umgebung. Lassen Sie sich von unseren Referenzen inspirieren."
+>
+  <section class="pt-32 pb-16 bg-neutral-50">
+    <div class="container">
+      <div class="max-w-3xl">
+        <h1 class="font-heading text-4xl md:text-5xl font-bold text-neutral-900 mb-6">
+          Unsere Projekte
+        </h1>
+        <p class="text-lg text-neutral-600 leading-relaxed">
+          Werfen Sie einen Blick auf unsere abgeschlossenen Arbeiten. Von privaten Garten uber Gewerbeobjekte bis hin zu Wohnanlagen - uberzeugen Sie sich selbst von der Qualitat unserer Arbeit.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {sortedProjects.map((project) => (
+          <ProjectCard
+            title={project.title}
+            client={project.client}
+            location={project.location}
+            image={project.images[0]?.src}
+            href={`/projekte/${project.slug}/`}
+            services={project.services.map(s => serviceMap[s] || s)}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTA
+    headline="Ihr Projekt konnte das nachste sein"
+    subheadline="Kontaktieren Sie uns fur ein kostenloses Beratungsgesprach."
+  />
+</Layout>

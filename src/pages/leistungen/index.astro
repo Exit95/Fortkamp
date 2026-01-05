@@ -1,0 +1,30 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Services from '../../components/sections/Services.astro';
+import CTA from '../../components/sections/CTA.astro';
+---
+
+<Layout
+  title="Unsere Leistungen"
+  description="Entdecken Sie unser umfangreiches Angebot: Gartenpflege, Landschaftsbau, Pflasterarbeiten, Zaunbau, Baumarbeiten und Winterdienst in Ahaus und Umgebung."
+>
+  <section class="pt-32 pb-16 bg-neutral-50">
+    <div class="container">
+      <div class="max-w-3xl">
+        <h1 class="font-heading text-4xl md:text-5xl font-bold text-neutral-900 mb-6">
+          Unsere Leistungen
+        </h1>
+        <p class="text-lg text-neutral-600 leading-relaxed">
+          Von der Gartenpflege uber Landschaftsbau bis hin zum Winterdienst, wir bieten Ihnen alle Leistungen rund um Ihren Garten und Ausenbereich aus einer Hand. Professionell, zuverlassig und zu fairen Preisen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Services showAllLink={false} />
+
+  <CTA
+    headline="Interesse an unseren Leistungen?"
+    subheadline="Kontaktieren Sie uns fur ein kostenloses und unverbindliches Angebot."
+  />
+</Layout>

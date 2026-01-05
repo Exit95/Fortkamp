@@ -1,0 +1,100 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CTA from '../../components/sections/CTA.astro';
+import ServiceCard from '../../components/cards/ServiceCard.astro';
+import services from '../../data/services.json';
+
+export function getStaticPaths() {
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service }
+  }));
+}
+
+const { service } = Astro.props;
+
+const relatedServices = services
+  .filter((s) => s.id !== service.id)
+  .slice(0, 3);
+---
+
+<Layout
+  title={service.title}
+  description={service.shortDescription}
+>
+  <section class="pt-32 pb-16 bg-neutral-50">
+    <div class="container">
+      <nav class="mb-6" aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2 text-sm text-neutral-500">
+          <li><a href="/" class="hover:text-green-600">Startseite</a></li>
+          <li><span class="mx-2">/</span></li>
+          <li><a href="/leistungen/" class="hover:text-green-600">Leistungen</a></li>
+          <li><span class="mx-2">/</span></li>
+          <li class="text-neutral-900">{service.title}</li>
+        </ol>
+      </nav>
+
+      <div class="grid gap-12 lg:grid-cols-2 items-center">
+        <div>
+          <h1 class="font-heading text-4xl md:text-5xl font-bold text-neutral-900 mb-6">
+            {service.title}
+          </h1>
+          <p class="text-lg text-neutral-600 leading-relaxed">
+            {service.shortDescription}
+          </p>
+        </div>
+        <div>
+          <img
+            src={service.image}
+            alt={service.title}
+            class="rounded-xl shadow-lg w-full h-auto"
+            loading="eager"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="section-heading mb-8">Unsere Leistungen im Bereich {service.title}</h2>
+
+        <ul class="space-y-4">
+          {service.features.map((feature: string) => (
+            <li class="flex items-start gap-4 p-4 bg-green-50 rounded-lg">
+              <svg class="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+              <span class="text-neutral-700">{feature}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {relatedServices.length > 0 && (
+    <section class="section bg-neutral-50">
+      <div class="container">
+        <h2 class="section-heading text-center mb-12">Weitere Leistungen</h2>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {relatedServices.map((related) => (
+            <ServiceCard
+              title={related.title}
+              description={related.shortDescription}
+              image={related.image}
+              href={`/leistungen/${related.slug}/`}
+              features={related.features}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <CTA
+    headline={`Interesse an ${service.title}?`}
+    subheadline="Kontaktieren Sie uns fur ein kostenloses und unverbindliches Angebot."
+  />
+</Layout>

@@ -1,0 +1,67 @@
+---
+import config from '../../data/config.json';
+
+interface Props {
+  showImage?: boolean;
+}
+
+const { showImage = true } = Astro.props;
+---
+
+<section class="section">
+  <div class="container">
+    <div class="grid gap-12 lg:grid-cols-2 items-center">
+      {showImage && (
+        <div class="relative">
+          <img
+            src="/profilbild.jpg"
+            alt="Galabau Fortkamp"
+            class="rounded-xl shadow-lg w-full h-auto"
+            loading="lazy"
+          />
+        </div>
+      )}
+
+      <div>
+        <h2 class="section-heading">
+          {config.company.name} - Ihr Partner vor Ort
+        </h2>
+        <p class="text-lg text-neutral-600 mb-6 leading-relaxed">
+          Seit 3 Jahren z.B sind wir Ihr zuverlassiger Partner fur Garten- und Landschaftsbau in {config.contact.address.city} und Umgebung. Mit Leidenschaft und Fachkompetenz verwandeln wir Ihre Ausenbereiche in grune Oasen.
+        </p>
+        <p class="text-neutral-600 mb-8 leading-relaxed">
+          Unser Team aus erfahrenen Garten- und Landschaftsbauern steht Ihnen von der ersten Beratung bis zur finalen Umsetzung zur Seite. Ob Privatgarten, Gewerbeobjekt oder Wohnanlage, wir bieten masgeschneiderte Losungen fur jeden Bedarf.
+        </p>
+
+        <div class="grid grid-cols-2 gap-6 mb-8">
+          <div>
+            <h3 class="font-semibold text-neutral-900 mb-1">Zuverlassig</h3>
+            <p class="text-sm text-neutral-600">Termine werden eingehalten</p>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-neutral-900 mb-1">Lokal</h3>
+            <p class="text-sm text-neutral-600">Aus der Region, fur die Region</p>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-neutral-900 mb-1">Fair</h3>
+            <p class="text-sm text-neutral-600">Transparente Preise</p>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-neutral-900 mb-1">Schnell</h3>
+            <p class="text-sm text-neutral-600">Kurze Reaktionszeiten</p>
+          </div>
+        </div>
+
+        <a href="/kontakt/" class="btn-primary">
+          Kontakt aufnehmen
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

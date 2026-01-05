@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1",
+    "author": "Familie Müller",
+    "location": "Ahaus",
+    "content": "Herr Fortkamp und sein Team haben unseren verwilderten Garten in eine wahre Oase verwandelt. Von der Planung bis zur Umsetzung alles aus einer Hand. Absolute Empfehlung!",
+    "rating": 5,
+    "serviceId": "landschaftsbau",
+    "featured": true
+  },
+  {
+    "id": "2",
+    "author": "Hausverwaltung Schröder",
+    "location": "Ahaus",
+    "content": "Seit drei Jahren übernimmt Galabau Fortkamp den Winterdienst für unsere Wohnanlagen. Zuverlässig, pünktlich und immer erreichbar - auch bei plötzlichem Schneefall.",
+    "rating": 5,
+    "serviceId": "winterdienst",
+    "featured": true
+  },
+  {
+    "id": "3",
+    "author": "Peter Becker",
+    "location": "Heek",
+    "content": "Die neue Einfahrt sieht fantastisch aus! Saubere Arbeit, fairer Preis und das Team war super freundlich. Gerne wieder.",
+    "rating": 5,
+    "serviceId": "pflasterarbeiten",
+    "featured": true
+  },
+  {
+    "id": "4",
+    "author": "Sabine und Klaus Weber",
+    "location": "Gronau",
+    "content": "Endlich haben wir einen verlässlichen Partner für die Gartenpflege gefunden. Der Rasen war noch nie so schön!",
+    "rating": 5,
+    "serviceId": "gartenpflege",
+    "featured": false
+  }
+]

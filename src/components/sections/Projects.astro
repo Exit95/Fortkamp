@@ -1,0 +1,60 @@
+---
+import ProjectCard from '../cards/ProjectCard.astro';
+import projects from '../../data/projects.json';
+import services from '../../data/services.json';
+
+interface Props {
+  headline?: string;
+  subheadline?: string;
+  limit?: number;
+  featured?: boolean;
+  showAllLink?: boolean;
+}
+
+const {
+  headline = 'Unsere Projekte',
+  subheadline = 'Werfen Sie einen Blick auf unsere abgeschlossenen Arbeiten.',
+  limit,
+  featured = false,
+  showAllLink = true
+} = Astro.props;
+
+const serviceMap = Object.fromEntries(services.map(s => [s.id, s.title]));
+
+let displayProjects = featured ? projects.filter(p => p.featured) : projects;
+displayProjects = displayProjects.sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime());
+if (limit) displayProjects = displayProjects.slice(0, limit);
+---
+
+<section class="section">
+  <div class="container">
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <h2 class="section-heading">{headline}</h2>
+      <p class="section-subheadline mx-auto">{subheadline}</p>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {displayProjects.map((project) => (
+        <ProjectCard
+          title={project.title}
+          client={project.client}
+          location={project.location}
+          image={project.images[0]?.src}
+          href={`/projekte/${project.slug}/`}
+          services={project.services.map(s => serviceMap[s] || s)}
+        />
+      ))}
+    </div>
+
+    {showAllLink && (
+      <div class="text-center mt-10">
+        <a href="/projekte/" class="btn-outline">
+          Alle Projekte ansehen
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+    )}
+  </div>
+</section>

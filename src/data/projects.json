@@ -1,0 +1,82 @@
+[
+  {
+    "id": "1",
+    "slug": "Beispielprojekt",
+    "title": "Beispielprojekt",
+    "client": "Familie Schulze",
+    "clientType": "private",
+    "location": "Ahaus",
+    "completedAt": "2024-06",
+    "duration": "4 Wochen",
+    "summary": "Komplette Neugestaltung eines 400m² Gartens mit Terrasse, Rasen und Bepflanzung.",
+    "services": ["landschaftsbau", "pflasterarbeiten", "gartenpflege"],
+    "images": [
+      {
+        "src": "/projekte.png",
+        "alt": "Fertiggestellter Garten mit Terrasse"
+      },
+      {
+        "src": "/projekte.png",
+        "alt": "Gartenanlage mit Bepflanzung"
+      }
+    ],
+    "featured": true
+  },
+  {
+    "id": "2",
+    "slug": "beispielprojekt",
+    "title": "Beispielprojekt",
+    "client": "Autohaus Schmidt",
+    "clientType": "commercial",
+    "location": "Borken",
+    "completedAt": "2024-04",
+    "duration": "3 Wochen",
+    "summary": "Pflasterung eines 800m² Kundenparkplatzes mit Entwässerungssystem.",
+    "services": ["pflasterarbeiten"],
+    "images": [
+      {
+        "src": "/projekte.png",
+        "alt": "Gepflasterter Gewerbeparkplatz"
+      }
+    ],
+    "featured": true
+  },
+  {
+    "id": "3",
+    "slug": "Beispiel projekt",
+    "title": "Beispielprojekt",
+    "client": "WEG Ahauserstraße",
+    "clientType": "property-management",
+    "location": "Ahaus",
+    "completedAt": "2024-02",
+    "duration": "Laufend seit 2021",
+    "summary": "Ganzjähriger Winterdienst für eine Wohnanlage mit 24 Einheiten.",
+    "services": ["winterdienst"],
+    "images": [
+      {
+        "src": "/projekte.png",
+        "alt": "Geräumter Gehweg im Winter"
+      }
+    ],
+    "featured": false
+  },
+  {
+    "id": "4",
+    "slug": "Beispielprojekt",
+    "title": "Beispielprojekt",
+    "client": "Familie Bergmann",
+    "clientType": "private",
+    "location": "Heek",
+    "completedAt": "2024-08",
+    "duration": "2 Wochen",
+    "summary": "Stilvolle Natursteinterrasse mit integrierter Beleuchtung und Hochbeeten.",
+    "services": ["landschaftsbau", "pflasterarbeiten"],
+    "images": [
+      {
+        "src": "/projekte.png",
+        "alt": "Natursteinterrasse mit Bepflanzung"
+      }
+    ],
+    "featured": true
+  }
+]

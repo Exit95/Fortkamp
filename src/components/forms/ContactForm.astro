@@ -1,0 +1,241 @@
+---
+import services from '../../data/services.json';
+---
+
+<form id="contact-form" class="space-y-6" novalidate>
+  <div class="grid gap-6 md:grid-cols-2">
+    <div>
+      <label for="name" class="form-label">
+        Name <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        required
+        minlength="2"
+        maxlength="100"
+        class="form-input"
+        placeholder="Ihr Name"
+      />
+      <p class="mt-1 text-sm text-red-600 hidden" data-error="name"></p>
+    </div>
+
+    <div>
+      <label for="email" class="form-label">
+        E-Mail <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        required
+        class="form-input"
+        placeholder="ihre@email.de"
+      />
+      <p class="mt-1 text-sm text-red-600 hidden" data-error="email"></p>
+    </div>
+  </div>
+
+  <div class="grid gap-6 md:grid-cols-2">
+    <div>
+      <label for="phone" class="form-label">Telefon</label>
+      <input
+        type="tel"
+        id="phone"
+        name="phone"
+        class="form-input"
+        placeholder="+49 XXX XXXXXXX"
+      />
+      <p class="mt-1 text-sm text-red-600 hidden" data-error="phone"></p>
+    </div>
+
+    <div>
+      <label for="service" class="form-label">Leistung</label>
+      <select id="service" name="service" class="form-input">
+        <option value="">Bitte auswählen</option>
+        {services.sort((a, b) => a.order - b.order).map((service) => (
+          <option value={service.id}>{service.title}</option>
+        ))}
+      </select>
+    </div>
+  </div>
+
+  <div>
+    <label for="message" class="form-label">
+      Nachricht <span class="text-red-500">*</span>
+    </label>
+    <textarea
+      id="message"
+      name="message"
+      required
+      minlength="10"
+      maxlength="5000"
+      rows="5"
+      class="form-input resize-y"
+      placeholder="Beschreiben Sie Ihr Anliegen..."
+    ></textarea>
+    <p class="mt-1 text-sm text-red-600 hidden" data-error="message"></p>
+  </div>
+
+  <div class="flex items-start gap-3">
+    <input
+      type="checkbox"
+      id="consent"
+      name="consent"
+      required
+      class="mt-1 w-4 h-4 text-green-600 border-neutral-300 rounded focus:ring-green-500"
+    />
+    <label for="consent" class="text-sm text-neutral-600">
+      Ich habe die <a href="/datenschutz/" class="text-green-600 hover:underline">Datenschutzerklarung</a> gelesen und stimme der Verarbeitung meiner Daten zu. <span class="text-red-500">*</span>
+    </label>
+  </div>
+  <p class="text-sm text-red-600 hidden" data-error="consent"></p>
+
+  <button
+    type="submit"
+    class="w-full md:w-auto btn-primary"
+    id="submit-btn"
+  >
+    <span id="btn-text">Nachricht senden</span>
+    <svg id="btn-spinner" class="w-5 h-5 animate-spin hidden" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+  </button>
+</form>
+
+<div id="form-success" class="hidden p-6 bg-green-50 border border-green-200 rounded-lg">
+  <div class="flex items-start gap-4">
+    <svg class="w-6 h-6 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <div>
+      <h3 class="font-semibold text-green-800">Vielen Dank fur Ihre Nachricht!</h3>
+      <p class="mt-1 text-green-700">Wir werden uns schnellstmoglich bei Ihnen melden.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const successMessage = document.getElementById('form-success');
+  const submitBtn = document.getElementById('submit-btn');
+  const btnText = document.getElementById('btn-text');
+  const btnSpinner = document.getElementById('btn-spinner');
+
+  const validators: Record<string, (value: any) => string> = {
+    name: (value: string) => {
+      if (!value.trim()) return 'Bitte geben Sie Ihren Namen ein';
+      if (value.length < 2) return 'Name muss mindestens 2 Zeichen haben';
+      return '';
+    },
+    email: (value: string) => {
+      if (!value.trim()) return 'Bitte geben Sie Ihre E-Mail-Adresse ein';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Ungultige E-Mail-Adresse';
+      return '';
+    },
+    phone: (value: string) => {
+      if (value && !/^[\d\s\-\+\(\)]+$/.test(value)) return 'Ungultige Telefonnummer';
+      return '';
+    },
+    message: (value: string) => {
+      if (!value.trim()) return 'Bitte geben Sie eine Nachricht ein';
+      if (value.length < 10) return 'Nachricht muss mindestens 10 Zeichen haben';
+      return '';
+    },
+    consent: (checked: boolean) => {
+      if (!checked) return 'Bitte stimmen Sie der Datenschutzerklarung zu';
+      return '';
+    }
+  };
+
+  function showError(field: string, message: string) {
+    const errorEl = document.querySelector(`[data-error="${field}"]`);
+    if (errorEl) {
+      errorEl.textContent = message;
+      errorEl.classList.remove('hidden');
+    }
+  }
+
+  function clearError(field: string) {
+    const errorEl = document.querySelector(`[data-error="${field}"]`);
+    if (errorEl) {
+      errorEl.classList.add('hidden');
+    }
+  }
+
+  function setLoading(loading: boolean) {
+    if (loading) {
+      submitBtn?.setAttribute('disabled', 'true');
+      btnText?.classList.add('hidden');
+      btnSpinner?.classList.remove('hidden');
+    } else {
+      submitBtn?.removeAttribute('disabled');
+      btnText?.classList.remove('hidden');
+      btnSpinner?.classList.add('hidden');
+    }
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const data = {
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
+      phone: formData.get('phone') as string,
+      service: formData.get('service') as string,
+      message: formData.get('message') as string,
+      consent: formData.has('consent') && (form.querySelector('#consent') as HTMLInputElement)?.checked
+    };
+
+    let hasErrors = false;
+
+    for (const [field, validator] of Object.entries(validators)) {
+      const value = field === 'consent' ? data.consent : (data as any)[field];
+      const error = validator(value);
+      if (error) {
+        showError(field, error);
+        hasErrors = true;
+      } else {
+        clearError(field);
+      }
+    }
+
+    if (hasErrors) return;
+
+    setLoading(true);
+
+    try {
+      const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+      const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+      if (!supabaseUrl || !supabaseKey) {
+        throw new Error('Configuration missing');
+      }
+
+      const response = await fetch(`${supabaseUrl}/functions/v1/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabaseKey}`
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        form.classList.add('hidden');
+        successMessage?.classList.remove('hidden');
+      } else {
+        throw new Error(result.message || 'Fehler beim Senden');
+      }
+    } catch (error) {
+      alert('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut oder kontaktieren Sie uns telefonisch.');
+    } finally {
+      setLoading(false);
+    }
+  });
+</script>

@@ -1,0 +1,116 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CTA from '../../components/sections/CTA.astro';
+import projects from '../../data/projects.json';
+import services from '../../data/services.json';
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project }
+  }));
+}
+
+const { project } = Astro.props;
+const serviceMap = Object.fromEntries(services.map(s => [s.id, s.title]));
+---
+
+<Layout
+  title={project.title}
+  description={project.summary}
+>
+  <section class="pt-32 pb-16 bg-neutral-50">
+    <div class="container">
+      <nav class="mb-6" aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2 text-sm text-neutral-500">
+          <li><a href="/" class="hover:text-green-600">Startseite</a></li>
+          <li><span class="mx-2">/</span></li>
+          <li><a href="/projekte/" class="hover:text-green-600">Projekte</a></li>
+          <li><span class="mx-2">/</span></li>
+          <li class="text-neutral-900">{project.title}</li>
+        </ol>
+      </nav>
+
+      <div class="max-w-3xl">
+        <h1 class="font-heading text-4xl md:text-5xl font-bold text-neutral-900 mb-4">
+          {project.title}
+        </h1>
+        <div class="flex flex-wrap gap-4 text-neutral-600 mb-6">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span>{project.location}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{project.duration}</span>
+          </div>
+        </div>
+        <p class="text-lg text-neutral-600 leading-relaxed">
+          {project.summary}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid gap-4 md:grid-cols-2">
+        {project.images.map((image: { src: string; alt: string }, index: number) => (
+          <img
+            src={image.src}
+            alt={image.alt}
+            class="rounded-xl shadow-lg w-full h-64 object-cover"
+            loading={index === 0 ? "eager" : "lazy"}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 bg-neutral-50">
+    <div class="container">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Projektdetails</h2>
+
+        <div class="grid gap-6 md:grid-cols-2">
+          <div class="bg-white p-6 rounded-xl shadow-sm">
+            <h3 class="font-semibold text-neutral-900 mb-2">Kunde</h3>
+            <p class="text-neutral-600">{project.client}</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl shadow-sm">
+            <h3 class="font-semibold text-neutral-900 mb-2">Projekttyp</h3>
+            <p class="text-neutral-600">
+              {project.clientType === 'private' ? 'Privatkunde' :
+               project.clientType === 'commercial' ? 'Gewerbekunde' : 'Hausverwaltung'}
+            </p>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl shadow-sm md:col-span-2">
+            <h3 class="font-semibold text-neutral-900 mb-3">Durchgefuhrte Leistungen</h3>
+            <div class="flex flex-wrap gap-2">
+              {project.services.map((serviceId: string) => (
+                <a
+                  href={`/leistungen/${serviceId}/`}
+                  class="px-3 py-1.5 bg-green-50 text-green-700 text-sm font-medium rounded-lg hover:bg-green-100 transition-colors"
+                >
+                  {serviceMap[serviceId] || serviceId}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CTA
+    headline="Ahnliches Projekt geplant?"
+    subheadline="Kontaktieren Sie uns fur ein kostenloses Beratungsgesprach und Angebot."
+  />
+</Layout>

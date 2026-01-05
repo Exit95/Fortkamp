@@ -1,0 +1,27 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/sections/Hero.astro';
+import Services from '../components/sections/Services.astro';
+import About from '../components/sections/About.astro';
+import Projects from '../components/sections/Projects.astro';
+import Testimonials from '../components/sections/Testimonials.astro';
+import CTA from '../components/sections/CTA.astro';
+---
+
+<Layout headerVariant="transparent">
+  <Hero
+    headline="Ihr Garten- und Landschaftsbauer in Ahaus"
+    subheadline="Professionelle Gartenpflege, Landschaftsbau und Winterdienst - zuverlassig, kompetent und lokal. Wir verwandeln Ihre Ausenbereiche in grune Oasen."
+    backgroundImage="https://images.pexels.com/photos/1453499/pexels-photo-1453499.jpeg?auto=compress&cs=tinysrgb&w=1920"
+  />
+
+  <Services limit={6} />
+
+  <About />
+
+  <Projects featured={true} limit={3} />
+
+  <Testimonials />
+
+  <CTA />
+</Layout>

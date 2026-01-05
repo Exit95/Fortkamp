@@ -1,0 +1,41 @@
+---
+import TestimonialCard from '../cards/TestimonialCard.astro';
+import testimonials from '../../data/testimonials.json';
+
+interface Props {
+  headline?: string;
+  subheadline?: string;
+  limit?: number;
+  featured?: boolean;
+}
+
+const {
+  headline = 'Das sagen unsere Kunden',
+  subheadline = 'Vertrauen Sie auf die Erfahrungen anderer Kunden.',
+  limit = 3,
+  featured = true
+} = Astro.props;
+
+let displayTestimonials = featured ? testimonials.filter(t => t.featured) : testimonials;
+displayTestimonials = displayTestimonials.slice(0, limit);
+---
+
+<section class="section bg-green-50">
+  <div class="container">
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <h2 class="section-heading">{headline}</h2>
+      <p class="section-subheading mx-auto">{subheadline}</p>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {displayTestimonials.map((testimonial) => (
+        <TestimonialCard
+          content={testimonial.content}
+          author={testimonial.author}
+          location={testimonial.location}
+          rating={testimonial.rating}
+        />
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,104 @@
+[
+  {
+    "id": "gartenpflege",
+    "slug": "gartenpflege",
+    "title": "Beispiel Leistung",
+    "shortDescription": "Professionelle Pflege für Ihren Garten - von Rasenmähen bis Heckenschnitt.",
+    "icon": "leaf",
+    "image": "/leistungen.png",
+    "features": [
+      "Rasenmähen und Rasenpflege",
+      "Heckenschnitt und Formschnitt",
+      "Unkrautbekämpfung",
+      "Beetpflege und Bepflanzung",
+      "Bewässerungssysteme",
+      "Saisonale Gartenpflege"
+    ],
+    "order": 1
+  },
+  {
+    "id": "landschaftsbau",
+    "slug": "landschaftsbau",
+    "title": "Beispiel Leistung",
+    "shortDescription": "Gestaltung und Neuanlage von Gärten, Terrassen und Außenanlagen.",
+    "icon": "tree",
+    "image": "/leistungen.png",
+    "features": [
+      "Gartenplanung und -gestaltung",
+      "Neuanlage von Gärten",
+      "Terrassenbau",
+      "Mauerbau und Hangbefestigung",
+      "Teich- und Wasserbau",
+      "Rollrasenverlegung"
+    ],
+    "order": 2
+  },
+  {
+    "id": "pflasterarbeiten",
+    "slug": "pflasterarbeiten",
+    "title": "Beispiel Leistung",
+    "shortDescription": "Einfahrten, Wege und Terrassen fachgerecht gepflastert.",
+    "icon": "grid",
+    "image": "/leistungen.png",
+    "features": [
+      "Einfahrten und Parkplätze",
+      "Gartenwege",
+      "Terrassenpflasterung",
+      "Natursteinarbeiten",
+      "Randsteine und Einfassungen",
+      "Sanierung bestehender Flächen"
+    ],
+    "order": 3
+  },
+  {
+    "id": "zaunbau",
+    "slug": "zaunbau",
+    "title": "Beispiel Leistung",
+    "shortDescription": "Hochwertige Zäune und Sichtschutz für Ihr Grundstück.",
+    "icon": "fence",
+    "image": "/leistungen.png",
+    "features": [
+      "Metallzäune",
+      "Holzzäune",
+      "Doppelstabmattenzäune",
+      "Sichtschutzelemente",
+      "Tore und Eingänge",
+      "Gabionen"
+    ],
+    "order": 4
+  },
+  {
+    "id": "baumarbeiten",
+    "slug": "baumarbeiten",
+    "title": "Beispiel Leistung",
+    "shortDescription": "Professionelle Baumpflege, Baumschnitt und Baumfällung.",
+    "icon": "tree-pine",
+    "image": "/leistungen.png",
+    "features": [
+      "Baumfällung",
+      "Baumschnitt und Kronenpflege",
+      "Stubbenfräsen",
+      "Totholzentfernung",
+      "Obstbaumschnitt",
+      "Baumgutachten"
+    ],
+    "order": 5
+  },
+  {
+    "id": "winterdienst",
+    "slug": "winterdienst",
+    "title": "Beispiel Leistung",
+    "shortDescription": "Zuverlässiger Räum- und Streudienst im Winter - 24/7 erreichbar.",
+    "icon": "snowflake",
+    "image": "/leistungen.png",
+    "features": [
+      "Schneeräumung",
+      "Streudienst",
+      "24/7 Bereitschaft",
+      "Gewerbliche Objekte",
+      "Private Grundstücke",
+      "Dokumentation für Hausverwaltungen"
+    ],
+    "order": 6
+  }
+]
