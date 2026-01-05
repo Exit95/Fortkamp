@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Galabau Fortkamp - Docker Swarm Deployment Script
+# test.danapfel-digital.de - Docker Swarm Deployment Script
 # Dieses Skript baut das Image, pusht es zur Registry und deployed den Stack
 
 set -e
 
-echo "🚀 Starte Docker Swarm Deployment für Galabau Fortkamp..."
+echo "🚀 Starte Docker Swarm Deployment für test.danapfel-digital.de..."
 
 # Farben für Output
 GREEN='\033[0;32m'
@@ -16,8 +16,8 @@ NC='\033[0m' # No Color
 # Konfiguration
 # Registry-Adresse (kann über Umgebungsvariable überschrieben werden)
 REGISTRY="${REGISTRY:-10.1.9.0:5000}"
-IMAGE_NAME="galabau-fortkamp"
-STACK_NAME="galabau"
+IMAGE_NAME="test.danapfel-digital.de"
+STACK_NAME="test-danapfel-digital-de"
 
 echo -e "${YELLOW}📝 Verwende Registry: ${REGISTRY}${NC}"
 
@@ -80,8 +80,8 @@ docker stack services ${STACK_NAME}
 
 echo ""
 echo "💡 Nützliche Befehle:"
-echo "  - Logs anzeigen: docker service logs -f ${STACK_NAME}_galabau-fortkamp"
+echo "  - Logs anzeigen: docker service logs -f ${STACK_NAME}_web"
 echo "  - Service Status: docker stack services ${STACK_NAME}"
 echo "  - Stack entfernen: docker stack rm ${STACK_NAME}"
-echo "  - Service skalieren: docker service scale ${STACK_NAME}_galabau-fortkamp=3"
+echo "  - Service skalieren: docker service scale ${STACK_NAME}_web=3"
 

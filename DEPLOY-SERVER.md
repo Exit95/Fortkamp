@@ -41,29 +41,24 @@ docker stack deploy -c docker-stack.yml galabau
 ## 📋 Wichtige Unterschiede
 
 ### ✅ Korrektes Stack-File (`docker-stack.yml`)
-- Image: `10.1.9.0:5000/galabau-fortkamp:latest`
+- Image: `10.1.9.0:5000/test.danapfel-digital.de:latest`
 - Netzwerk: `webproxy`
 - Port: `80` (Apache2)
 - Certresolver: `letsencrypt`
-- Stack-Name: `galabau`
+- Stack-Name: `test-danapfel-digital-de`
+- Service-Name: `web`
 
-### ❌ Altes Stack-File (`~/test.danapfel-digital-de.yml`)
-- Image: `test.danapfel-digital-de` (existiert nicht!)
-- Netzwerk: `public-ingress` (falsch)
-- Port: `3000` (falsch für Apache)
-- Certresolver: `myresolver` (falsch)
-- Stack-Name: `Fortkamp`
+## 🗑️ Alte Stacks entfernen
 
-## 🗑️ Alten Stack entfernen
-
-Falls der alte Stack noch läuft:
+Falls alte Stacks noch laufen:
 
 ```bash
-# Alten Stack entfernen
-docker stack rm Fortkamp
+# Alle alten Stacks entfernen
+docker stack rm Fortkamp 2>/dev/null || true
+docker stack rm galabau 2>/dev/null || true
 
-# Warten bis alle Container gestoppt sind
-docker stack ps Fortkamp  # Sollte leer sein
+# Warten bis alle Container gestoppt sind (10 Sekunden)
+sleep 10
 
 # Neuen Stack deployen
 cd ~/Fortkamp
@@ -74,13 +69,13 @@ cd ~/Fortkamp
 
 ```bash
 # Service-Status prüfen
-docker service ls | grep galabau
+docker service ls | grep test-danapfel-digital-de
 
 # Logs anzeigen
-docker service logs -f galabau_galabau-fortkamp
+docker service logs -f test-danapfel-digital-de_web
 
 # Traefik-Routing prüfen
-docker service logs traefik | grep -i fortkamp
+docker service logs ingress_traefik | grep -i "test.danapfel"
 
 # Website testen
 curl -I https://test.danapfel-digital.de
@@ -89,7 +84,7 @@ curl -I https://test.danapfel-digital.de
 ## 🌐 Erwartetes Ergebnis
 
 Nach erfolgreichem Deployment:
-- ✅ Service läuft: `galabau_galabau-fortkamp`
+- ✅ Service läuft: `test-danapfel-digital-de_web`
 - ✅ Replicas: `1/1`
 - ✅ Apache2 läuft auf Port 80
 - ✅ Traefik routet zu `test.danapfel-digital.de`
@@ -102,12 +97,12 @@ Nach erfolgreichem Deployment:
 
 1. **Prüfe Service-Status:**
    ```bash
-   docker service ps galabau_galabau-fortkamp
+   docker service ps test-danapfel-digital-de_web
    ```
 
 2. **Prüfe Traefik-Labels:**
    ```bash
-   docker service inspect galabau_galabau-fortkamp --format '{{json .Spec.TaskTemplate.ContainerSpec.Labels}}' | jq
+   docker service inspect test-danapfel-digital-de_web --format '{{json .Spec.TaskTemplate.ContainerSpec.Labels}}' | jq
    ```
 
 3. **Prüfe Netzwerk:**
@@ -117,7 +112,7 @@ Nach erfolgreichem Deployment:
 
 4. **Teste Apache direkt:**
    ```bash
-   docker exec $(docker ps -q -f name=galabau_galabau-fortkamp) wget -O- http://localhost/
+   docker exec $(docker ps -q -f name=test-danapfel-digital-de_web) wget -O- http://localhost/
    ```
 
 5. **Prüfe DNS:**
@@ -129,16 +124,16 @@ Nach erfolgreichem Deployment:
 
 ```bash
 # Prüfe welches Image verwendet wird
-docker service inspect galabau_galabau-fortkamp --format '{{.Spec.TaskTemplate.ContainerSpec.Image}}'
+docker service inspect test-danapfel-digital-de_web --format '{{.Spec.TaskTemplate.ContainerSpec.Image}}'
 
-# Sollte sein: 10.1.9.0:5000/galabau-fortkamp:latest
+# Sollte sein: 10.1.9.0:5000/test.danapfel-digital.de:latest
 ```
 
 ### Falscher Port?
 
 ```bash
 # Prüfe Port in Labels
-docker service inspect galabau_galabau-fortkamp | grep loadbalancer.server.port
+docker service inspect test-danapfel-digital-de_web | grep loadbalancer.server.port
 
 # Sollte sein: 80 (nicht 3000!)
 ```
