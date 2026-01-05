@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  web:
+    image: 10.1.9.0:5000/galabau-fortkamp:latest
+    networks:
+      - webproxy
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      labels:
+        # Traefik aktivieren
+        - "traefik.enable=true"
+        
+        # HTTP Router
+        - "traefik.http.routers.fortkamp.rule=Host(`test.danapfel-digital.de`)"
+        - "traefik.http.routers.fortkamp.entrypoints=web"
+        
+        # HTTPS Router
+        - "traefik.http.routers.fortkamp-secure.rule=Host(`test.danapfel-digital.de`)"
+        - "traefik.http.routers.fortkamp-secure.entrypoints=websecure"
+        - "traefik.http.routers.fortkamp-secure.tls=true"
+        - "traefik.http.routers.fortkamp-secure.tls.certresolver=letsencrypt"
+        
+        # HTTP zu HTTPS Redirect
+        - "traefik.http.middlewares.fortkamp-redirect.redirectscheme.scheme=https"
+        - "traefik.http.middlewares.fortkamp-redirect.redirectscheme.permanent=true"
+        - "traefik.http.routers.fortkamp.middlewares=fortkamp-redirect"
+        
+        # Service Port (wichtig für Swarm!)
+        - "traefik.http.services.fortkamp.loadbalancer.server.port=80"
+        
+        # Security Headers
+        - "traefik.http.middlewares.fortkamp-headers.headers.customResponseHeaders.X-Robots-Tag=index,follow"
+        - "traefik.http.middlewares.fortkamp-headers.headers.sslRedirect=true"
+        - "traefik.http.middlewares.fortkamp-headers.headers.stsSeconds=31536000"
+        - "traefik.http.middlewares.fortkamp-headers.headers.stsIncludeSubdomains=true"
+        - "traefik.http.middlewares.fortkamp-headers.headers.stsPreload=true"
+        - "traefik.http.routers.fortkamp-secure.middlewares=fortkamp-headers"
+
+networks:
+  webproxy:
+    external: true
+
