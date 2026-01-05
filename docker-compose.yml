@@ -11,10 +11,10 @@ services:
       labels:
         - "traefik.enable=true"
         # REPLACE with your actual domain
-        - "traefik.http.routers.test.danapfel-digital-de.rule=Host(`<domain>`)"
+        - "traefik.http.routers.test.danapfel-digital-de.rule=Host(`test.danapfel-digital.de`)"
         - "traefik.http.routers.test.danapfel-digital-de.entrypoints=websecure"
         - "traefik.http.routers.test.danapfel-digital-de.tls.certresolver=myresolver"
-        - "traefik.http.services.test.danapfel-digital-de.loadbalancer.server.port=3000"
+        - "traefik.http.services.test.danapfel-digital-de.loadbalancer.server.port=80"
 networks:
   public-ingress:
     external: true

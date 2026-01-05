@@ -9,6 +9,13 @@
 3. **Webproxy Netzwerk** existiert: `docker network create webproxy`
 4. **DNS-Eintrag** für test.danapfel-digital.de zeigt auf deinen Server
 
+### 🔧 Technologie-Stack
+
+- **Frontend:** Astro (Static Site Generator)
+- **Webserver:** Apache2 (httpd:2.4-alpine)
+- **Reverse Proxy:** Traefik
+- **SSL:** Let's Encrypt (automatisch)
+
 ### 🎯 Deployment in 3 Schritten
 
 #### 1. DNS konfigurieren
@@ -95,9 +102,12 @@ docker logs traefik | grep -i acme
 ### 📝 Wichtige Dateien
 
 - `docker-compose.yml` - Container & Traefik Konfiguration
-- `Dockerfile` - Build-Anweisungen
-- `nginx.conf` - Webserver Konfiguration
-- `deploy.sh` - Automatisches Deployment-Skript
+- `docker-stack.yml` - Docker Swarm Stack Konfiguration
+- `Dockerfile` - Build-Anweisungen (Apache2)
+- `apache.conf` - Apache VirtualHost Konfiguration
+- `.htaccess` - Apache Rewrite Rules & Caching
+- `deploy.sh` - Automatisches Deployment-Skript (Docker Compose)
+- `deploy-swarm.sh` - Automatisches Deployment-Skript (Docker Swarm)
 - `astro.config.mjs` - Site URL Konfiguration
 
 ### 🔄 Updates deployen

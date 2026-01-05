@@ -10,6 +10,12 @@ npm-debug.log*
 .vscode
 .idea
 *.md
+Dockerfile
+docker-compose.yml
+docker-stack.yml
+deploy*.sh
+create-network.sh
+fix-network.sh
 !README.md
 .astro
 .codesandbox
