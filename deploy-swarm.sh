@@ -37,6 +37,15 @@ if ! docker info | grep -q "Swarm: active"; then
     error_exit "Docker Swarm ist nicht aktiv. Bitte initialisiere Swarm zuerst."
 fi
 
+# Prüfe/Erstelle webproxy Overlay-Netzwerk
+echo -e "${YELLOW}🌐 Prüfe webproxy Netzwerk...${NC}"
+if ! docker network ls | grep -q "webproxy.*swarm"; then
+    echo -e "${YELLOW}📡 Erstelle webproxy Overlay-Netzwerk...${NC}"
+    docker network create --driver overlay --attachable webproxy || error_exit "Netzwerk-Erstellung fehlgeschlagen"
+else
+    echo -e "${GREEN}✅ webproxy Netzwerk existiert bereits${NC}"
+fi
+
 echo -e "${YELLOW}🔨 Baue Docker Image...${NC}"
 docker build -t ${IMAGE_NAME}:latest . || error_exit "Docker Build fehlgeschlagen"
 

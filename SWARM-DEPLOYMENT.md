@@ -24,7 +24,17 @@ git clone https://github.com/Exit95/Fortkamp.git
 cd Fortkamp
 ```
 
-### 2. Deployment ausführen
+### 2. Webproxy Netzwerk erstellen (nur einmal nötig)
+
+```bash
+# Skript ausführbar machen
+chmod +x create-network.sh
+
+# Overlay-Netzwerk erstellen
+./create-network.sh
+```
+
+### 3. Deployment ausführen
 
 ```bash
 # Skript ausführbar machen
@@ -37,6 +47,12 @@ chmod +x deploy-swarm.sh
 Das war's! 🎉
 
 ## 📋 Manuelle Schritte
+
+### Schritt 0: Webproxy Netzwerk erstellen (nur einmal)
+
+```bash
+docker network create --driver overlay --attachable webproxy
+```
 
 ### Schritt 1: Image bauen
 
