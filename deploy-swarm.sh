@@ -39,11 +39,18 @@ fi
 
 # Prüfe/Erstelle webproxy Overlay-Netzwerk
 echo -e "${YELLOW}🌐 Prüfe webproxy Netzwerk...${NC}"
-if ! docker network ls | grep -q "webproxy.*swarm"; then
+if docker network ls | grep -q "webproxy.*swarm"; then
+    echo -e "${GREEN}✅ webproxy Overlay-Netzwerk existiert${NC}"
+elif docker network ls | grep -q "webproxy"; then
+    echo -e "${RED}❌ Ein lokales 'webproxy' Netzwerk existiert!${NC}"
+    echo -e "${YELLOW}   Bitte lösche es zuerst:${NC}"
+    echo -e "   docker network rm webproxy"
+    echo -e "   Oder führe aus: ./create-network.sh"
+    error_exit "Falscher Netzwerk-Typ"
+else
     echo -e "${YELLOW}📡 Erstelle webproxy Overlay-Netzwerk...${NC}"
     docker network create --driver overlay --attachable webproxy || error_exit "Netzwerk-Erstellung fehlgeschlagen"
-else
-    echo -e "${GREEN}✅ webproxy Netzwerk existiert bereits${NC}"
+    echo -e "${GREEN}✅ Netzwerk erstellt${NC}"
 fi
 
 echo -e "${YELLOW}🔨 Baue Docker Image...${NC}"
