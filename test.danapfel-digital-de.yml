@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web:
-    image: 10.1.9.0:5000/test.danapfel-digital.de:latest
+    image: 10.1.9.0:5000/test-danapfel-digital-de:latest
     networks:
       - public-ingress
     deploy:
@@ -15,14 +15,14 @@ services:
         # Traefik aktivieren
         - "traefik.enable=true"
 
-        # HTTPS Router (nur websecure, kein HTTP)
+        # HTTPS Router
         - "traefik.http.routers.test-danapfel-digital-de.rule=Host(`test.danapfel-digital.de`)"
         - "traefik.http.routers.test-danapfel-digital-de.entrypoints=websecure"
         - "traefik.http.routers.test-danapfel-digital-de.tls=true"
         - "traefik.http.routers.test-danapfel-digital-de.tls.certresolver=myresolver"
 
-        # Service Port (wichtig für Swarm!)
-        - "traefik.http.services.test-danapfel-digital-de.loadbalancer.server.port=80"
+        # Service Port
+        - "traefik.http.services.test-danapfel-digital-de.loadbalancer.server.port=3000"
 
 networks:
   public-ingress:

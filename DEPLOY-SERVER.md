@@ -1,6 +1,6 @@
 # 🚀 Deployment auf dem Server
 
-## Schnellanleitung
+## galabau-fortkamp.de
 
 ### 1. Auf den Server verbinden
 ```bash
@@ -16,6 +16,20 @@ git pull
 ### 3. Deployment ausführen
 ```bash
 ./deploy-swarm.sh
+```
+
+---
+
+## test.danapfel-digital.de wiederherstellen
+
+Falls der test-danapfel Stack gelöscht wurde:
+
+```bash
+# Stack neu deployen
+docker stack deploy -c ~/Fortkamp/test.danapfel-digital-de.yml test-danapfel-digital-de
+
+# Prüfen
+docker service ls | grep test
 ```
 
 ## ⚠️ WICHTIG: Korrektes Stack-File verwenden
