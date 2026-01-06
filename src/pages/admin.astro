@@ -1,9 +1,9 @@
 ---
 export const prerender = false;
 
-// Login credentials
-const ADMIN_USER = 'galabau';
-const ADMIN_PASS = 'Fortkamp2024!';
+// Login credentials aus Umgebungsvariablen
+const ADMIN_USER = process.env.ADMIN_USER || 'admin';
+const ADMIN_PASS = process.env.ADMIN_PASSWORD || '';
 
 // Check session
 const session = await Astro.session?.get('user');
