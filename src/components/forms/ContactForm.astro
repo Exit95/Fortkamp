@@ -208,18 +208,10 @@ import services from '../../data/services.json';
     setLoading(true);
 
     try {
-      const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
-      const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
-
-      if (!supabaseUrl || !supabaseKey) {
-        throw new Error('Configuration missing');
-      }
-
-      const response = await fetch(`${supabaseUrl}/functions/v1/contact`, {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${supabaseKey}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
       });
