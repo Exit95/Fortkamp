@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import nodemailer from 'nodemailer';
+import { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, CONTACT_EMAIL, FROM_EMAIL, isSmtpConfigured } from '../../lib/env';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -8,28 +9,45 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Validation
     if (!name || !email || !message) {
-      return new Response(JSON.stringify({ 
-        success: false, 
-        message: 'Pflichtfelder fehlen' 
+      return new Response(JSON.stringify({
+        success: false,
+        message: 'Pflichtfelder fehlen'
       }), { status: 400 });
     }
 
-    // Create transporter
-    const port = parseInt(process.env.SMTP_PORT || '587');
+    // Prüfen ob SMTP konfiguriert ist
+    if (!isSmtpConfigured()) {
+      console.warn('⚠️ SMTP nicht konfiguriert - E-Mail wird nicht gesendet');
+      console.warn('SMTP Debug:', { host: SMTP_HOST, port: SMTP_PORT, user: SMTP_USER, hasPassword: !!SMTP_PASS });
+      return new Response(JSON.stringify({
+        success: false,
+        message: 'E-Mail-Versand nicht konfiguriert'
+      }), { status: 500 });
+    }
+
+    console.log('📧 SMTP Config:', { host: SMTP_HOST, port: SMTP_PORT, user: SMTP_USER });
+
+    // Create transporter - wie bei Auszeit
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'mail.danapfel-digital.de',
-      port: port,
-      secure: port === 465, // true für 465, false für 587
+      host: SMTP_HOST,
+      port: parseInt(SMTP_PORT),
+      secure: SMTP_PORT === '465', // String-Vergleich wie bei Auszeit
       auth: {
-        user: process.env.SMTP_USER || 'info@galabau-fortkamp.de',
-        pass: process.env.SMTP_PASS
-      }
+        user: SMTP_USER,
+        pass: SMTP_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false
+      },
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 20000,
     });
 
     // Email content
     const mailOptions = {
-      from: `"Galabau Fortkamp Website" <${process.env.SMTP_USER || 'info@galabau-fortkamp.de'}>`,
-      to: 'info@galabau-fortkamp.de',
+      from: `"Galabau Fortkamp Website" <${FROM_EMAIL}>`,
+      to: CONTACT_EMAIL,
       replyTo: email,
       subject: `Neue Kontaktanfrage von ${name}`,
       html: `
