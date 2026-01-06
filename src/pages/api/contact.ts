@@ -15,10 +15,11 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Create transporter
+    const port = parseInt(process.env.SMTP_PORT || '587');
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.strato.de',
-      port: parseInt(process.env.SMTP_PORT || '465'),
-      secure: true,
+      host: process.env.SMTP_HOST || 'mail.danapfel-digital.de',
+      port: port,
+      secure: port === 465, // true für 465, false für 587
       auth: {
         user: process.env.SMTP_USER || 'info@galabau-fortkamp.de',
         pass: process.env.SMTP_PASS

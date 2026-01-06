@@ -33,6 +33,13 @@ ENV HOST=0.0.0.0
 ENV PORT=4321
 ENV NODE_ENV=production
 
+# Create startup script that forces HOST binding
+RUN echo '#!/bin/sh' > /app/start.sh && \
+    echo 'export HOST=0.0.0.0' >> /app/start.sh && \
+    echo 'export PORT=4321' >> /app/start.sh && \
+    echo 'exec node ./dist/server/entry.mjs' >> /app/start.sh && \
+    chmod +x /app/start.sh
+
 # Expose port
 EXPOSE 4321
 
@@ -40,4 +47,4 @@ EXPOSE 4321
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
   CMD wget --quiet --tries=1 --spider http://127.0.0.1:4321/ || exit 1
 
-CMD ["node", "./dist/server/entry.mjs"]
+CMD ["/app/start.sh"]
