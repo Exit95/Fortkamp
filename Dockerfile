@@ -36,8 +36,8 @@ ENV NODE_ENV=production
 # Expose port
 EXPOSE 4321
 
-# Health check - longer timeout for SSR
+# Health check - use IPv4 explicitly
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-  CMD wget --quiet --tries=1 --spider http://localhost:4321/ || exit 1
+  CMD wget --quiet --tries=1 --spider http://127.0.0.1:4321/ || exit 1
 
 CMD ["node", "./dist/server/entry.mjs"]
