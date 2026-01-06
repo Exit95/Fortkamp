@@ -16,32 +16,28 @@ COPY . .
 RUN npm run build
 
 # Production Stage
-FROM httpd:2.4-alpine
+FROM node:18-alpine AS runtime
 
-# Enable required Apache modules
-RUN sed -i \
-    -e 's/^#\(LoadModule .*mod_rewrite.so\)/\1/' \
-    -e 's/^#\(LoadModule .*mod_deflate.so\)/\1/' \
-    -e 's/^#\(LoadModule .*mod_expires.so\)/\1/' \
-    -e 's/^#\(LoadModule .*mod_headers.so\)/\1/' \
-    /usr/local/apache2/conf/httpd.conf
+WORKDIR /app
 
 # Copy built files from builder
-COPY --from=builder /app/dist /usr/local/apache2/htdocs
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
 
-# Copy Apache configuration
-COPY apache.conf /usr/local/apache2/conf/extra/httpd-vhosts.conf
-COPY .htaccess /usr/local/apache2/htdocs/.htaccess
+# Copy data files (needed for API routes)
+COPY --from=builder /app/src/data ./src/data
 
-# Enable virtual hosts
-RUN echo "Include conf/extra/httpd-vhosts.conf" >> /usr/local/apache2/conf/httpd.conf
+# Set environment variables
+ENV HOST=0.0.0.0
+ENV PORT=4321
+ENV NODE_ENV=production
 
-# Expose port 80
-EXPOSE 80
+# Expose port
+EXPOSE 4321
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --quiet --tries=1 --spider http://localhost/ || exit 1
+  CMD wget --quiet --tries=1 --spider http://localhost:4321/ || exit 1
 
-CMD ["httpd-foreground"]
-
+CMD ["node", "./dist/server/entry.mjs"]

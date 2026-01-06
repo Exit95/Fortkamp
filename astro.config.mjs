@@ -2,9 +2,10 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
+import node from '@astrojs/node';
 
 export default defineConfig({
-  site: 'https://test.danapfel-digital.de',
+  site: 'https://galabau-fortkamp.de',
   integrations: [
     tailwind(),
     sitemap({
@@ -14,7 +15,10 @@ export default defineConfig({
       }
     })
   ],
-  output: 'static',
+  output: 'server',
+  adapter: node({
+    mode: 'standalone'
+  }),
   build: {
     inlineStylesheets: 'auto'
   }

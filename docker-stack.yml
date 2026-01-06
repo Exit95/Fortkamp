@@ -3,6 +3,12 @@ version: '3.8'
 services:
   web:
     image: 10.1.9.0:5000/galabau-fortkamp.de:latest
+    environment:
+      - S3_ENDPOINT=https://nbg1.your-objectstorage.com
+      - S3_REGION=eu-central
+      - S3_BUCKET=danapfel-digital
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
+      - S3_SECRET_KEY=${S3_SECRET_KEY}
     networks:
       - public-ingress
     deploy:
@@ -21,10 +27,9 @@ services:
         - "traefik.http.routers.galabau-fortkamp-de.tls=true"
         - "traefik.http.routers.galabau-fortkamp-de.tls.certresolver=myresolver"
 
-        # Service Port (wichtig für Swarm!)
-        - "traefik.http.services.galabau-fortkamp-de.loadbalancer.server.port=80"
+        # Service Port (Node.js auf Port 4321)
+        - "traefik.http.services.galabau-fortkamp-de.loadbalancer.server.port=4321"
 
 networks:
   public-ingress:
     external: true
-
