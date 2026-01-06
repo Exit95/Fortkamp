@@ -75,21 +75,23 @@ export async function getUploadUrl(filename: string, contentType: string): Promi
 export async function uploadFile(file: Buffer, filename: string, contentType: string): Promise<string> {
   const prefix = getPrefix();
   const bucket = getBucket();
-  const endpoint = getEnv('S3_ENDPOINT', 'https://nbg1.your-objectstorage.com');
   const key = `${prefix}${Date.now()}-${filename}`;
+
+  console.log('[S3] Uploading file:', { bucket, key, contentType, size: file.length });
 
   const command = new PutObjectCommand({
     Bucket: bucket,
     Key: key,
     Body: file,
     ContentType: contentType,
-    ACL: 'public-read',
   });
 
   await getS3Client().send(command);
 
-  // Öffentliche URL zurückgeben
-  return `${endpoint}/${bucket}/${key}`;
+  // Öffentliche URL für Hetzner Object Storage
+  const publicUrl = `https://${bucket}.nbg1.your-objectstorage.com/${key}`;
+  console.log('[S3] Upload successful:', publicUrl);
+  return publicUrl;
 }
 
 export async function deleteFile(url: string): Promise<void> {
