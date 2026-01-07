@@ -1,20 +1,26 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import Layout from '../../layouts/Layout.astro';
 import CTA from '../../components/sections/CTA.astro';
-import projects from '../../data/projects.json';
-import services from '../../data/services.json';
+import fs from 'fs/promises';
+import path from 'path';
 
-export function getStaticPaths() {
-  return projects.map((project) => ({
-    params: { slug: project.slug },
-    props: { project }
-  }));
+const { slug } = Astro.params;
+
+const projectsPath = path.join(process.cwd(), 'src/data/projects.json');
+const servicesPath = path.join(process.cwd(), 'src/data/services.json');
+
+const projects = JSON.parse(await fs.readFile(projectsPath, 'utf-8'));
+const services = JSON.parse(await fs.readFile(servicesPath, 'utf-8'));
+
+const project = projects.find((p: any) => p.slug === slug);
+
+if (!project) {
+  return Astro.redirect('/404');
 }
 
-const { project } = Astro.props;
-const serviceMap = Object.fromEntries(services.map(s => [s.id, s.title]));
+const serviceMap = Object.fromEntries(services.map((s: any) => [s.id, s.title]));
 ---
 
 <Layout

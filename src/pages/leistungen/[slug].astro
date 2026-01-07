@@ -1,22 +1,25 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import Layout from '../../layouts/Layout.astro';
 import CTA from '../../components/sections/CTA.astro';
 import ServiceCard from '../../components/cards/ServiceCard.astro';
-import services from '../../data/services.json';
+import fs from 'fs/promises';
+import path from 'path';
 
-export function getStaticPaths() {
-  return services.map((service) => ({
-    params: { slug: service.slug },
-    props: { service }
-  }));
+const { slug } = Astro.params;
+
+const servicesPath = path.join(process.cwd(), 'src/data/services.json');
+const services = JSON.parse(await fs.readFile(servicesPath, 'utf-8'));
+
+const service = services.find((s: any) => s.slug === slug);
+
+if (!service) {
+  return Astro.redirect('/404');
 }
 
-const { service } = Astro.props;
-
 const relatedServices = services
-  .filter((s) => s.id !== service.id)
+  .filter((s: any) => s.id !== service.id)
   .slice(0, 3);
 ---
 
