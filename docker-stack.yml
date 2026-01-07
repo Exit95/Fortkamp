@@ -19,8 +19,7 @@ services:
       # Admin
       - ADMIN_USER=admin
       - ADMIN_PASSWORD=Fortkamp2024!
-    volumes:
-      - galabau-data:/app/src/data
+    # Kein lokales Volume nötig - Daten werden in S3 gespeichert
     networks:
       - public-ingress
     deploy:
