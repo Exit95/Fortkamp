@@ -18,7 +18,7 @@ services:
       - SMTP_PASS=${SMTP_PASS}
       # Admin
       - ADMIN_USER=admin
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - ADMIN_PASSWORD=Fortkamp2024!
     networks:
       - public-ingress
     deploy:
