@@ -4,6 +4,8 @@ let services = [];
 let projects = [];
 let editingServiceIndex = -1;
 let editingProjectIndex = -1;
+let currentServiceImages = [];
+let currentProjectImages = [];
 
 // Tab switching
 function showTab(tab) {
@@ -80,18 +82,15 @@ function renderProjects() {
 // Add new service
 function addService() {
   editingServiceIndex = -1;
+  currentServiceImages = [];
   document.getElementById('service-id').value = '';
   document.getElementById('service-title').value = '';
   document.getElementById('service-slug').value = '';
   document.getElementById('service-description').value = '';
   document.getElementById('service-features').value = '';
   document.getElementById('service-order').value = services.length + 1;
-  
-  // Clear gallery
-  if (window.setImages_servicegallery) {
-    window.setImages_servicegallery([]);
-  }
-  
+  document.getElementById('service-images-list').innerHTML = '';
+
   document.getElementById('service-modal').classList.remove('hidden');
 }
 
@@ -99,20 +98,37 @@ function addService() {
 function editService(index) {
   editingServiceIndex = index;
   const service = services[index];
-  
+  currentServiceImages = service.images || [];
+
   document.getElementById('service-id').value = service.id || '';
   document.getElementById('service-title').value = service.title || '';
   document.getElementById('service-slug').value = service.slug || '';
   document.getElementById('service-description').value = service.shortDescription || '';
   document.getElementById('service-features').value = (service.features || []).join('\n');
   document.getElementById('service-order').value = service.order || 1;
-  
-  // Load images into gallery
-  if (window.setImages_servicegallery && service.images) {
-    window.setImages_servicegallery(service.images);
-  }
-  
+
+  // Render existing images
+  renderServiceImages();
+
   document.getElementById('service-modal').classList.remove('hidden');
+}
+
+// Render service images
+function renderServiceImages() {
+  const list = document.getElementById('service-images-list');
+  if (!list) return;
+
+  list.innerHTML = currentServiceImages.map((img, i) => `
+    <div class="relative">
+      <img src="${img.src}" alt="${img.alt || ''}" class="w-full h-24 object-cover rounded">
+      <button type="button" onclick="removeServiceImageByIndex(${i})" class="absolute top-1 right-1 bg-red-600 text-white px-2 py-1 rounded text-xs">×</button>
+    </div>
+  `).join('');
+}
+
+function removeServiceImageByIndex(index) {
+  currentServiceImages.splice(index, 1);
+  renderServiceImages();
 }
 
 // Delete service
@@ -131,7 +147,7 @@ function closeServiceModal() {
 // Save service
 document.getElementById('service-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  
+
   const service = {
     id: document.getElementById('service-id').value || document.getElementById('service-slug').value,
     slug: document.getElementById('service-slug').value,
@@ -139,15 +155,15 @@ document.getElementById('service-form')?.addEventListener('submit', async (e) =>
     shortDescription: document.getElementById('service-description').value,
     features: document.getElementById('service-features').value.split('\n').filter(f => f.trim()),
     order: parseInt(document.getElementById('service-order').value) || 1,
-    images: window.getImages_servicegallery ? window.getImages_servicegallery() : []
+    images: currentServiceImages
   };
-  
+
   if (editingServiceIndex >= 0) {
     services[editingServiceIndex] = service;
   } else {
     services.push(service);
   }
-  
+
   renderServices();
   closeServiceModal();
 });
@@ -155,6 +171,7 @@ document.getElementById('service-form')?.addEventListener('submit', async (e) =>
 // Add new project
 function addProject() {
   editingProjectIndex = -1;
+  currentProjectImages = [];
   document.getElementById('project-id').value = '';
   document.getElementById('project-title').value = '';
   document.getElementById('project-slug').value = '';
@@ -162,11 +179,7 @@ function addProject() {
   document.getElementById('project-location').value = '';
   document.getElementById('project-summary').value = '';
   document.getElementById('project-featured').checked = false;
-
-  // Clear gallery
-  if (window.setImages_projectgallery) {
-    window.setImages_projectgallery([]);
-  }
+  document.getElementById('project-images-list').innerHTML = '';
 
   document.getElementById('project-modal').classList.remove('hidden');
 }
@@ -175,6 +188,7 @@ function addProject() {
 function editProject(index) {
   editingProjectIndex = index;
   const project = projects[index];
+  currentProjectImages = project.images || [];
 
   document.getElementById('project-id').value = project.id || '';
   document.getElementById('project-title').value = project.title || '';
@@ -184,12 +198,28 @@ function editProject(index) {
   document.getElementById('project-summary').value = project.summary || '';
   document.getElementById('project-featured').checked = project.featured || false;
 
-  // Load images into gallery
-  if (window.setImages_projectgallery && project.images) {
-    window.setImages_projectgallery(project.images);
-  }
+  // Render existing images
+  renderProjectImages();
 
   document.getElementById('project-modal').classList.remove('hidden');
+}
+
+// Render project images
+function renderProjectImages() {
+  const list = document.getElementById('project-images-list');
+  if (!list) return;
+
+  list.innerHTML = currentProjectImages.map((img, i) => `
+    <div class="relative">
+      <img src="${img.src}" alt="${img.alt || ''}" class="w-full h-24 object-cover rounded">
+      <button type="button" onclick="removeProjectImageByIndex(${i})" class="absolute top-1 right-1 bg-red-600 text-white px-2 py-1 rounded text-xs">×</button>
+    </div>
+  `).join('');
+}
+
+function removeProjectImageByIndex(index) {
+  currentProjectImages.splice(index, 1);
+  renderProjectImages();
 }
 
 // Delete project
@@ -217,7 +247,7 @@ document.getElementById('project-form')?.addEventListener('submit', async (e) =>
     location: document.getElementById('project-location').value,
     summary: document.getElementById('project-summary').value,
     featured: document.getElementById('project-featured').checked,
-    images: window.getImages_projectgallery ? window.getImages_projectgallery() : [],
+    images: currentProjectImages,
     services: [],
     tags: []
   };
@@ -311,21 +341,8 @@ function setupServiceUploader() {
 }
 
 function addServiceImage(url, key, alt) {
-  const list = document.getElementById('service-images-list');
-  if (!list) return;
-
-  const div = document.createElement('div');
-  div.className = 'relative';
-  div.innerHTML = `
-    <img src="${url}" alt="${alt}" class="w-full h-24 object-cover rounded">
-    <button onclick="removeServiceImage('${key}')" class="absolute top-1 right-1 bg-red-600 text-white px-2 py-1 rounded text-xs">×</button>
-  `;
-  list.appendChild(div);
-}
-
-function removeServiceImage(key) {
-  // TODO: Implement removal
-  console.log('Remove image:', key);
+  currentServiceImages.push({ src: url, alt: alt, key: key });
+  renderServiceImages();
 }
 
 // Handle image upload for projects
@@ -367,21 +384,8 @@ function setupProjectUploader() {
 }
 
 function addProjectImage(url, key, alt) {
-  const list = document.getElementById('project-images-list');
-  if (!list) return;
-
-  const div = document.createElement('div');
-  div.className = 'relative';
-  div.innerHTML = `
-    <img src="${url}" alt="${alt}" class="w-full h-24 object-cover rounded">
-    <button onclick="removeProjectImage('${key}')" class="absolute top-1 right-1 bg-red-600 text-white px-2 py-1 rounded text-xs">×</button>
-  `;
-  list.appendChild(div);
-}
-
-function removeProjectImage(key) {
-  // TODO: Implement removal
-  console.log('Remove image:', key);
+  currentProjectImages.push({ src: url, alt: alt, key: key });
+  renderProjectImages();
 }
 
 // Initialize on page load

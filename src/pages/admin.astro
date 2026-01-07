@@ -1,4 +1,6 @@
 ---
+import ServiceCategorySelect from '../components/admin/ServiceCategorySelect.astro';
+
 export const prerender = false;
 
 // Login credentials aus Umgebungsvariablen
@@ -20,11 +22,11 @@ if (Astro.request.method === 'POST') {
 
     if (username === ADMIN_USER && password === ADMIN_PASS) {
       await Astro.session?.set('user', ADMIN_USER);
-      isLoggedIn = true;
+      return Astro.redirect('/admin');
     }
   } else if (action === 'logout') {
     await Astro.session?.destroy();
-    isLoggedIn = false;
+    return Astro.redirect('/admin');
   }
 }
 ---
@@ -146,41 +148,56 @@ if (Astro.request.method === 'POST') {
   </div>
 
   <!-- Service Edit Modal -->
-  <div id="service-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+  <div id="service-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
       <div class="p-6">
         <h3 class="text-xl font-bold mb-4">Leistung bearbeiten</h3>
         <form id="service-form" class="space-y-4">
           <input type="hidden" id="service-id">
-          <div>
-            <label class="block text-sm font-medium mb-1">Titel</label>
-            <input type="text" id="service-title" class="w-full border rounded-lg px-4 py-2" required>
-          </div>
+          <input type="hidden" id="service-index">
+          
+          <ServiceCategorySelect id="service-title" label="Leistungskategorie" required={true} />
+          
           <div>
             <label class="block text-sm font-medium mb-1">Slug (URL)</label>
             <input type="text" id="service-slug" class="w-full border rounded-lg px-4 py-2" required>
           </div>
+
           <div>
             <label class="block text-sm font-medium mb-1">Kurzbeschreibung</label>
             <textarea id="service-description" class="w-full border rounded-lg px-4 py-2" rows="2"></textarea>
           </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">Bild</label>
-            <div class="flex gap-2">
-              <input type="file" id="service-image-file" accept="image/*" class="flex-1 border rounded-lg px-4 py-2">
-              <button type="button" onclick="uploadServiceImage()" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Upload</button>
+
+          <!-- Simple Image Upload -->
+          <div class="border-t pt-4">
+            <label class="block text-sm font-medium mb-2">Bilder hochladen</label>
+            <input
+              type="file"
+              id="service-image-upload"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              multiple
+              class="w-full border rounded-lg px-4 py-2"
+            />
+            <p class="text-xs text-gray-500 mt-1">JPG, PNG oder WebP (max. 50MB)</p>
+            <div id="service-upload-progress" class="hidden mt-2">
+              <div class="bg-gray-200 rounded-full h-2">
+                <div id="service-progress-bar" class="bg-green-600 h-full transition-all" style="width: 0%"></div>
+              </div>
+              <p id="service-progress-text" class="text-sm text-gray-600 mt-1"></p>
             </div>
-            <input type="text" id="service-image" class="w-full border rounded-lg px-4 py-2 mt-2" placeholder="Bild-URL">
-            <img id="service-image-preview" class="mt-2 h-32 object-cover rounded hidden">
+            <div id="service-images-list" class="mt-4 grid grid-cols-3 gap-2"></div>
           </div>
+
           <div>
             <label class="block text-sm font-medium mb-1">Features (eine pro Zeile)</label>
             <textarea id="service-features" class="w-full border rounded-lg px-4 py-2" rows="4"></textarea>
           </div>
+
           <div>
             <label class="block text-sm font-medium mb-1">Reihenfolge</label>
             <input type="number" id="service-order" class="w-full border rounded-lg px-4 py-2" min="1">
           </div>
+
           <div class="flex gap-4 pt-4">
             <button type="submit" class="flex-1 bg-green-600 text-white py-2 rounded-lg">Speichern</button>
             <button type="button" onclick="closeServiceModal()" class="flex-1 bg-gray-300 py-2 rounded-lg">Abbrechen</button>
@@ -191,20 +208,24 @@ if (Astro.request.method === 'POST') {
   </div>
 
   <!-- Project Edit Modal -->
-  <div id="project-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+  <div id="project-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
       <div class="p-6">
         <h3 class="text-xl font-bold mb-4">Projekt bearbeiten</h3>
         <form id="project-form" class="space-y-4">
           <input type="hidden" id="project-id">
+          <input type="hidden" id="project-index">
+
           <div>
             <label class="block text-sm font-medium mb-1">Titel</label>
             <input type="text" id="project-title" class="w-full border rounded-lg px-4 py-2" required>
           </div>
+
           <div>
             <label class="block text-sm font-medium mb-1">Slug (URL)</label>
             <input type="text" id="project-slug" class="w-full border rounded-lg px-4 py-2" required>
           </div>
+
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium mb-1">Kunde</label>
@@ -215,22 +236,37 @@ if (Astro.request.method === 'POST') {
               <input type="text" id="project-location" class="w-full border rounded-lg px-4 py-2">
             </div>
           </div>
+
           <div>
             <label class="block text-sm font-medium mb-1">Zusammenfassung</label>
             <textarea id="project-summary" class="w-full border rounded-lg px-4 py-2" rows="3"></textarea>
           </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">Bilder</label>
-            <div class="flex gap-2 mb-2">
-              <input type="file" id="project-image-file" accept="image/*" class="flex-1 border rounded-lg px-4 py-2">
-              <button type="button" onclick="uploadProjectImage()" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Upload</button>
+
+          <!-- Image Upload -->
+          <div class="border-t pt-4">
+            <label class="block text-sm font-medium mb-2">Bilder hochladen</label>
+            <input
+              type="file"
+              id="project-image-upload"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              multiple
+              class="w-full border rounded-lg px-4 py-2"
+            />
+            <p class="text-xs text-gray-500 mt-1">JPG, PNG oder WebP (max. 50MB)</p>
+            <div id="project-upload-progress" class="hidden mt-2">
+              <div class="bg-gray-200 rounded-full h-2">
+                <div id="project-progress-bar" class="bg-green-600 h-full transition-all" style="width: 0%"></div>
+              </div>
+              <p id="project-progress-text" class="text-sm text-gray-600 mt-1"></p>
             </div>
-            <div id="project-images-list" class="grid grid-cols-3 gap-2"></div>
+            <div id="project-images-list" class="mt-4 grid grid-cols-3 gap-2"></div>
           </div>
+
           <div>
             <label class="block text-sm font-medium mb-1">Featured</label>
             <input type="checkbox" id="project-featured" class="w-5 h-5">
           </div>
+
           <div class="flex gap-4 pt-4">
             <button type="submit" class="flex-1 bg-green-600 text-white py-2 rounded-lg">Speichern</button>
             <button type="button" onclick="closeProjectModal()" class="flex-1 bg-gray-300 py-2 rounded-lg">Abbrechen</button>
@@ -240,283 +276,9 @@ if (Astro.request.method === 'POST') {
     </div>
   </div>
 
-  <script is:inline>
-    let services = [];
-    let projects = [];
-    let editingServiceIndex = -1;
-    let editingProjectIndex = -1;
-    let currentProjectImages = [];
-
-    // Load data on page load
-    document.addEventListener('DOMContentLoaded', () => {
-      loadServices();
-      loadProjects();
-    });
-
-    function showTab(tab) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active', 'opacity-100'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.add('opacity-60'));
-
-      document.getElementById(tab + '-tab').classList.remove('hidden');
-      document.getElementById('tab-' + tab).classList.add('active', 'opacity-100');
-      document.getElementById('tab-' + tab).classList.remove('opacity-60');
-    }
-
-    // ========== SERVICES ==========
-    async function loadServices() {
-      const res = await fetch('/api/services');
-      services = await res.json();
-      renderServices();
-    }
-
-    function renderServices() {
-      const list = document.getElementById('services-list');
-      list.innerHTML = services.map((s, i) => `
-        <div class="flex items-center gap-4 p-4 border rounded-lg">
-          <img src="${s.image || '/placeholder.png'}" class="w-16 h-16 object-cover rounded" onerror="this.src='/placeholder.png'">
-          <div class="flex-1">
-            <h3 class="font-bold">${s.title}</h3>
-            <p class="text-sm text-gray-500">${s.shortDescription || ''}</p>
-          </div>
-          <button onclick="editService(${i})" class="bg-blue-500 text-white px-3 py-1 rounded">Bearbeiten</button>
-          <button onclick="deleteService(${i})" class="bg-red-500 text-white px-3 py-1 rounded">Löschen</button>
-        </div>
-      `).join('');
-    }
-
-    function addService() {
-      editingServiceIndex = -1;
-      document.getElementById('service-form').reset();
-      document.getElementById('service-id').value = '';
-      document.getElementById('service-image-preview').classList.add('hidden');
-      document.getElementById('service-modal').classList.remove('hidden');
-    }
-
-    function editService(index) {
-      editingServiceIndex = index;
-      const s = services[index];
-      document.getElementById('service-id').value = s.id;
-      document.getElementById('service-slug').value = s.slug;
-      document.getElementById('service-title').value = s.title;
-      document.getElementById('service-description').value = s.shortDescription || '';
-      document.getElementById('service-image').value = s.image || '';
-      document.getElementById('service-features').value = (s.features || []).join('\n');
-      document.getElementById('service-order').value = s.order || 1;
-
-      const preview = document.getElementById('service-image-preview');
-      if (s.image) {
-        preview.src = s.image;
-        preview.classList.remove('hidden');
-      } else {
-        preview.classList.add('hidden');
-      }
-
-      document.getElementById('service-modal').classList.remove('hidden');
-    }
-
-    function closeServiceModal() {
-      document.getElementById('service-modal').classList.add('hidden');
-    }
-
-    document.getElementById('service-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const service = {
-        id: document.getElementById('service-slug').value,
-        slug: document.getElementById('service-slug').value,
-        title: document.getElementById('service-title').value,
-        shortDescription: document.getElementById('service-description').value,
-        image: document.getElementById('service-image').value,
-        features: document.getElementById('service-features').value.split('\n').filter(f => f.trim()),
-        icon: 'leaf',
-        order: parseInt(document.getElementById('service-order').value) || 1
-      };
-
-      if (editingServiceIndex >= 0) {
-        services[editingServiceIndex] = service;
-      } else {
-        services.push(service);
-      }
-
-      renderServices();
-      closeServiceModal();
-    });
-
-    function deleteService(index) {
-      if (confirm('Leistung wirklich löschen?')) {
-        services.splice(index, 1);
-        renderServices();
-      }
-    }
-
-    async function uploadServiceImage() {
-      const fileInput = document.getElementById('service-image-file');
-      if (!fileInput.files[0]) return alert('Bitte Datei auswählen');
-
-      const formData = new FormData();
-      formData.append('file', fileInput.files[0]);
-
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
-      const data = await res.json();
-
-      if (data.url) {
-        document.getElementById('service-image').value = data.url;
-        document.getElementById('service-image-preview').src = data.url;
-        document.getElementById('service-image-preview').classList.remove('hidden');
-      } else {
-        alert('Upload fehlgeschlagen');
-      }
-    }
-
-    async function saveServices() {
-      const res = await fetch('/api/services', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(services)
-      });
-      if (res.ok) {
-        alert('Leistungen gespeichert!');
-      } else {
-        alert('Fehler beim Speichern');
-      }
-    }
-
-    // ========== PROJECTS ==========
-    async function loadProjects() {
-      const res = await fetch('/api/projects');
-      projects = await res.json();
-      renderProjects();
-    }
-
-    function renderProjects() {
-      const list = document.getElementById('projects-list');
-      list.innerHTML = projects.map((p, i) => `
-        <div class="flex items-center gap-4 p-4 border rounded-lg">
-          <img src="${p.images?.[0]?.src || '/placeholder.png'}" class="w-16 h-16 object-cover rounded" onerror="this.src='/placeholder.png'">
-          <div class="flex-1">
-            <h3 class="font-bold">${p.title}</h3>
-            <p class="text-sm text-gray-500">${p.client} - ${p.location}</p>
-          </div>
-          <span class="${p.featured ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-600'} px-2 py-1 rounded text-xs">
-            ${p.featured ? 'Featured' : 'Normal'}
-          </span>
-          <button onclick="editProject(${i})" class="bg-blue-500 text-white px-3 py-1 rounded">Bearbeiten</button>
-          <button onclick="deleteProject(${i})" class="bg-red-500 text-white px-3 py-1 rounded">Löschen</button>
-        </div>
-      `).join('');
-    }
-
-    function addProject() {
-      editingProjectIndex = -1;
-      currentProjectImages = [];
-      document.getElementById('project-form').reset();
-      document.getElementById('project-id').value = '';
-      document.getElementById('project-images-list').innerHTML = '';
-      document.getElementById('project-modal').classList.remove('hidden');
-    }
-
-    function editProject(index) {
-      editingProjectIndex = index;
-      const p = projects[index];
-      document.getElementById('project-id').value = p.id;
-      document.getElementById('project-slug').value = p.slug;
-      document.getElementById('project-title').value = p.title;
-      document.getElementById('project-client').value = p.client || '';
-      document.getElementById('project-location').value = p.location || '';
-      document.getElementById('project-summary').value = p.summary || '';
-      document.getElementById('project-featured').checked = p.featured;
-
-      currentProjectImages = p.images || [];
-      renderProjectImages();
-
-      document.getElementById('project-modal').classList.remove('hidden');
-    }
-
-    function closeProjectModal() {
-      document.getElementById('project-modal').classList.add('hidden');
-    }
-
-    function renderProjectImages() {
-      const list = document.getElementById('project-images-list');
-      list.innerHTML = currentProjectImages.map((img, i) => `
-        <div class="relative">
-          <img src="${img.src}" class="w-full h-20 object-cover rounded">
-          <button type="button" onclick="removeProjectImage(${i})" class="absolute top-1 right-1 bg-red-500 text-white w-5 h-5 rounded-full text-xs">×</button>
-        </div>
-      `).join('');
-    }
-
-    function removeProjectImage(index) {
-      currentProjectImages.splice(index, 1);
-      renderProjectImages();
-    }
-
-    async function uploadProjectImage() {
-      const fileInput = document.getElementById('project-image-file');
-      if (!fileInput.files[0]) return alert('Bitte Datei auswählen');
-
-      const formData = new FormData();
-      formData.append('file', fileInput.files[0]);
-
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
-      const data = await res.json();
-
-      if (data.url) {
-        currentProjectImages.push({ src: data.url, alt: fileInput.files[0].name });
-        renderProjectImages();
-        fileInput.value = '';
-      } else {
-        alert('Upload fehlgeschlagen');
-      }
-    }
-
-    document.getElementById('project-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const project = {
-        id: editingProjectIndex >= 0 ? projects[editingProjectIndex].id : String(Date.now()),
-        slug: document.getElementById('project-slug').value,
-        title: document.getElementById('project-title').value,
-        client: document.getElementById('project-client').value,
-        clientType: 'private',
-        location: document.getElementById('project-location').value,
-        completedAt: new Date().toISOString().slice(0, 7),
-        duration: '',
-        summary: document.getElementById('project-summary').value,
-        services: [],
-        images: currentProjectImages,
-        featured: document.getElementById('project-featured').checked
-      };
-
-      if (editingProjectIndex >= 0) {
-        projects[editingProjectIndex] = { ...projects[editingProjectIndex], ...project };
-      } else {
-        projects.push(project);
-      }
-
-      renderProjects();
-      closeProjectModal();
-    });
-
-    function deleteProject(index) {
-      if (confirm('Projekt wirklich löschen?')) {
-        projects.splice(index, 1);
-        renderProjects();
-      }
-    }
-
-    async function saveProjects() {
-      const res = await fetch('/api/projects', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(projects)
-      });
-      if (res.ok) {
-        alert('Projekte gespeichert!');
-      } else {
-        alert('Fehler beim Speichern');
-      }
-    }
-  </script>
+  <script is:inline src="/upload-helper.js"></script>
+  <script is:inline src="/admin-gallery.js?v=1767803270"></script>
   )}
 </body>
 </html>
+
