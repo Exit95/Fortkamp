@@ -43,7 +43,12 @@ async function loadData() {
 function renderServices() {
   const list = document.getElementById('services-list');
   if (!list) return;
-  
+
+  if (services.length === 0) {
+    list.innerHTML = '<p class="text-gray-500 text-center py-4">Keine Leistungen vorhanden</p>';
+    return;
+  }
+
   list.innerHTML = services.map((service, index) => `
     <div class="border rounded-lg p-4 flex justify-between items-center">
       <div>
@@ -52,8 +57,8 @@ function renderServices() {
         <p class="text-xs text-gray-500 mt-1">${service.images?.length || 0} Bilder</p>
       </div>
       <div class="flex gap-2">
-        <button onclick="editService(${index})" class="bg-blue-600 text-white px-3 py-1 rounded">Bearbeiten</button>
-        <button onclick="deleteService(${index})" class="bg-red-600 text-white px-3 py-1 rounded">Löschen</button>
+        <button onclick="editService(${index})" style="background-color: #2563eb; color: white; padding: 0.25rem 0.75rem; border-radius: 0.25rem;">Bearbeiten</button>
+        <button onclick="deleteService(${index})" style="background-color: #dc2626; color: white; padding: 0.25rem 0.75rem; border-radius: 0.25rem;">Löschen</button>
       </div>
     </div>
   `).join('');
@@ -63,7 +68,12 @@ function renderServices() {
 function renderProjects() {
   const list = document.getElementById('projects-list');
   if (!list) return;
-  
+
+  if (projects.length === 0) {
+    list.innerHTML = '<p class="text-gray-500 text-center py-4">Keine Projekte vorhanden</p>';
+    return;
+  }
+
   list.innerHTML = projects.map((project, index) => `
     <div class="border rounded-lg p-4 flex justify-between items-center">
       <div>
@@ -72,8 +82,8 @@ function renderProjects() {
         <p class="text-xs text-gray-500 mt-1">${project.images?.length || 0} Bilder</p>
       </div>
       <div class="flex gap-2">
-        <button onclick="editProject(${index})" class="bg-blue-600 text-white px-3 py-1 rounded">Bearbeiten</button>
-        <button onclick="deleteProject(${index})" class="bg-red-600 text-white px-3 py-1 rounded">Löschen</button>
+        <button onclick="editProject(${index})" style="background-color: #2563eb; color: white; padding: 0.25rem 0.75rem; border-radius: 0.25rem;">Bearbeiten</button>
+        <button onclick="deleteProject(${index})" style="background-color: #dc2626; color: white; padding: 0.25rem 0.75rem; border-radius: 0.25rem;">Löschen</button>
       </div>
     </div>
   `).join('');
