@@ -1,19 +1,19 @@
 {
   "company": {
     "name": "Galabau Fortkamp",
-    "legalName": "Galabau Fortkamp GmbH",
-    "tagline": "Ihr Garten- und Landschaftsbauer in Ahaus",
-    "description": "Professionelle Gartenpflege, Landschaftsbau und Winterdienst in Ahaus und Umgebung. Zuverlässig, kompetent und lokal.",
-    "founded": 2008,
-    "owner": "Thomas Fortkamp"
+    "legalName": "Galabau Fortkamp",
+    "tagline": "Garten- und LandschaftsbauPlanung • Gestaltung • Pflege in Ahaus",
+    "description": "Kompetente Gartenpflege, Landschaftsbau und Winterdienst in Ahaus und Umgebung. Zuverlässig, kompetent und lokal.",
+    "founded": 2023,
+    "owner": "Maximilian Fortkamp"
   },
   "contact": {
-    "phone": "+4925619876543",
-    "phoneDisplay": "Beispiel Nummer",
+    "phone": "+49 1573 4261308",
+    "phoneDisplay": "Anrufen",
     "whatsapp": "4915734261308",
     "email": "info@galabau-fortkamp.de",
     "address": {
-      "street": "Musterstraße 123",
+      "street": "Lohweg 1",
       "city": "Ahaus",
       "zip": "48683",
       "state": "Nordrhein-Westfalen",
@@ -26,7 +26,7 @@
     "wednesday": "07:00 - 18:00",
     "thursday": "07:00 - 18:00",
     "friday": "07:00 - 16:00",
-    "saturday": "Nach Vereinbarung",
+    "saturday": "08:00 - 16:00",
     "sunday": "Geschlossen",
     "emergency": "Winterdienst: 24/7 erreichbar"
   },
