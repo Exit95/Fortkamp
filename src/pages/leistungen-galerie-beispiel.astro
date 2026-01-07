@@ -2,10 +2,10 @@
 import Layout from '../layouts/Layout.astro';
 import ImageGrid from '../components/gallery/ImageGrid.astro';
 import Lightbox from '../components/gallery/Lightbox.astro';
-import servicesData from '../data/services.json';
+import { getServices } from '../lib/data';
 import type { Service } from '../lib/types';
 
-const services = servicesData as Service[];
+const services = await getServices() as Service[];
 ---
 
 <Layout title="Unsere Leistungen - Galabau Fortkamp">

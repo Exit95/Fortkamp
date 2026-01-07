@@ -2,10 +2,10 @@
 import Layout from '../layouts/Layout.astro';
 import ImageGrid from '../components/gallery/ImageGrid.astro';
 import Lightbox from '../components/gallery/Lightbox.astro';
-import projectsData from '../data/projects.json';
+import { getProjects } from '../lib/data';
 import type { Project } from '../lib/types';
 
-const projects = projectsData as Project[];
+const projects = await getProjects() as Project[];
 const featuredProjects = projects.filter(p => p.featured);
 ---
 

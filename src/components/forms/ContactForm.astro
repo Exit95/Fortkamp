@@ -1,5 +1,6 @@
 ---
-import services from '../../data/services.json';
+import { getServices } from '../../lib/data';
+const services = await getServices();
 ---
 
 <form id="contact-form" class="space-y-6" novalidate>
