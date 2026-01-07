@@ -1,6 +1,4 @@
 ---
-import ImageUploader from '../components/admin/ImageUploader.astro';
-import ImageGalleryManager from '../components/admin/ImageGalleryManager.astro';
 import ServiceCategorySelect from '../components/admin/ServiceCategorySelect.astro';
 
 export const prerender = false;
@@ -170,12 +168,24 @@ if (Astro.request.method === 'POST') {
             <textarea id="service-description" class="w-full border rounded-lg px-4 py-2" rows="2"></textarea>
           </div>
 
-          <!-- Image Gallery Manager -->
+          <!-- Simple Image Upload -->
           <div class="border-t pt-4">
-            <ImageGalleryManager id="service-gallery" label="Bildergalerie" />
-            <div class="mt-4">
-              <ImageUploader id="service-uploader" type="service" label="Neues Bild hochladen" />
+            <label class="block text-sm font-medium mb-2">Bilder hochladen</label>
+            <input
+              type="file"
+              id="service-image-upload"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              multiple
+              class="w-full border rounded-lg px-4 py-2"
+            />
+            <p class="text-xs text-gray-500 mt-1">JPG, PNG oder WebP (max. 50MB)</p>
+            <div id="service-upload-progress" class="hidden mt-2">
+              <div class="bg-gray-200 rounded-full h-2">
+                <div id="service-progress-bar" class="bg-green-600 h-full transition-all" style="width: 0%"></div>
+              </div>
+              <p id="service-progress-text" class="text-sm text-gray-600 mt-1"></p>
             </div>
+            <div id="service-images-list" class="mt-4 grid grid-cols-3 gap-2"></div>
           </div>
 
           <div>
@@ -232,12 +242,24 @@ if (Astro.request.method === 'POST') {
             <textarea id="project-summary" class="w-full border rounded-lg px-4 py-2" rows="3"></textarea>
           </div>
 
-          <!-- Image Gallery Manager -->
+          <!-- Image Upload -->
           <div class="border-t pt-4">
-            <ImageGalleryManager id="project-gallery" label="Bildergalerie" />
-            <div class="mt-4">
-              <ImageUploader id="project-uploader" type="project" label="Neues Bild hochladen" />
+            <label class="block text-sm font-medium mb-2">Bilder hochladen</label>
+            <input
+              type="file"
+              id="project-image-upload"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              multiple
+              class="w-full border rounded-lg px-4 py-2"
+            />
+            <p class="text-xs text-gray-500 mt-1">JPG, PNG oder WebP (max. 50MB)</p>
+            <div id="project-upload-progress" class="hidden mt-2">
+              <div class="bg-gray-200 rounded-full h-2">
+                <div id="project-progress-bar" class="bg-green-600 h-full transition-all" style="width: 0%"></div>
+              </div>
+              <p id="project-progress-text" class="text-sm text-gray-600 mt-1"></p>
             </div>
+            <div id="project-images-list" class="mt-4 grid grid-cols-3 gap-2"></div>
           </div>
 
           <div>
@@ -254,6 +276,7 @@ if (Astro.request.method === 'POST') {
     </div>
   </div>
 
+  <script is:inline src="/upload-helper.js"></script>
   <script is:inline src="/admin-gallery.js?v=1767803270"></script>
   )}
 </body>

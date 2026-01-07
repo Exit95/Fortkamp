@@ -274,64 +274,114 @@ async function saveProjects() {
 
 // Handle image upload for services
 function setupServiceUploader() {
-  const uploader = document.getElementById('service-uploader');
+  const uploader = document.getElementById('service-image-upload');
   if (!uploader) return;
 
-  uploader.addEventListener('filesSelected', async (e) => {
-    const files = e.detail.files;
+  uploader.addEventListener('change', async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
     const slug = document.getElementById('service-slug').value || 'general';
+    const progressBar = document.getElementById('service-progress-bar');
+    const progressText = document.getElementById('service-progress-text');
+    const progressContainer = document.getElementById('service-upload-progress');
 
-    for (const file of files) {
+    if (progressContainer) progressContainer.classList.remove('hidden');
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
       try {
-        const uploadFn = window.uploadImage_serviceuploader;
-        if (!uploadFn) {
-          console.error('Upload function not found');
-          continue;
-        }
+        if (progressText) progressText.textContent = `Uploading ${file.name}... (${i + 1}/${files.length})`;
+        if (progressBar) progressBar.style.width = `${((i + 1) / files.length) * 100}%`;
 
-        const result = await uploadFn(file, slug);
+        const result = await window.uploadImage(file, 'service', slug);
 
-        // Add to gallery
-        const addImageFn = window.addImage_servicegallery;
-        if (addImageFn) {
-          addImageFn(result.url, result.key, result.alt);
-        }
+        // Add to images list
+        addServiceImage(result.url, result.key, file.name);
       } catch (error) {
         console.error('Upload failed:', error);
+        alert(`Upload failed for ${file.name}: ${error.message}`);
       }
     }
+
+    if (progressContainer) progressContainer.classList.add('hidden');
+    if (progressBar) progressBar.style.width = '0%';
+    uploader.value = '';
   });
+}
+
+function addServiceImage(url, key, alt) {
+  const list = document.getElementById('service-images-list');
+  if (!list) return;
+
+  const div = document.createElement('div');
+  div.className = 'relative';
+  div.innerHTML = `
+    <img src="${url}" alt="${alt}" class="w-full h-24 object-cover rounded">
+    <button onclick="removeServiceImage('${key}')" class="absolute top-1 right-1 bg-red-600 text-white px-2 py-1 rounded text-xs">×</button>
+  `;
+  list.appendChild(div);
+}
+
+function removeServiceImage(key) {
+  // TODO: Implement removal
+  console.log('Remove image:', key);
 }
 
 // Handle image upload for projects
 function setupProjectUploader() {
-  const uploader = document.getElementById('project-uploader');
+  const uploader = document.getElementById('project-image-upload');
   if (!uploader) return;
 
-  uploader.addEventListener('filesSelected', async (e) => {
-    const files = e.detail.files;
+  uploader.addEventListener('change', async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
     const slug = document.getElementById('project-slug').value || 'general';
+    const progressBar = document.getElementById('project-progress-bar');
+    const progressText = document.getElementById('project-progress-text');
+    const progressContainer = document.getElementById('project-upload-progress');
 
-    for (const file of files) {
+    if (progressContainer) progressContainer.classList.remove('hidden');
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
       try {
-        const uploadFn = window.uploadImage_projectuploader;
-        if (!uploadFn) {
-          console.error('Upload function not found');
-          continue;
-        }
+        if (progressText) progressText.textContent = `Uploading ${file.name}... (${i + 1}/${files.length})`;
+        if (progressBar) progressBar.style.width = `${((i + 1) / files.length) * 100}%`;
 
-        const result = await uploadFn(file, slug);
+        const result = await window.uploadImage(file, 'project', slug);
 
-        // Add to gallery
-        const addImageFn = window.addImage_projectgallery;
-        if (addImageFn) {
-          addImageFn(result.url, result.key, result.alt);
-        }
+        // Add to images list
+        addProjectImage(result.url, result.key, file.name);
       } catch (error) {
         console.error('Upload failed:', error);
+        alert(`Upload failed for ${file.name}: ${error.message}`);
       }
     }
+
+    if (progressContainer) progressContainer.classList.add('hidden');
+    if (progressBar) progressBar.style.width = '0%';
+    uploader.value = '';
   });
+}
+
+function addProjectImage(url, key, alt) {
+  const list = document.getElementById('project-images-list');
+  if (!list) return;
+
+  const div = document.createElement('div');
+  div.className = 'relative';
+  div.innerHTML = `
+    <img src="${url}" alt="${alt}" class="w-full h-24 object-cover rounded">
+    <button onclick="removeProjectImage('${key}')" class="absolute top-1 right-1 bg-red-600 text-white px-2 py-1 rounded text-xs">×</button>
+  `;
+  list.appendChild(div);
+}
+
+function removeProjectImage(key) {
+  // TODO: Implement removal
+  console.log('Remove image:', key);
 }
 
 // Initialize on page load

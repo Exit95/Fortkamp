@@ -186,3 +186,26 @@ export function getPublicUrl(key: string): string {
   return `${endpoint}/${bucket}/${key}`;
 }
 
+// Direkter Upload zu S3 (für Chunked Upload)
+export async function uploadToS3Direct(buffer: Buffer, key: string, contentType: string): Promise<string> {
+  const bucket = getBucket();
+  const prefix = getPrefix();
+  const fullKey = `${prefix}${key}`;
+
+  console.log('[S3] Direct upload:', { bucket, key: fullKey, contentType, size: buffer.length });
+
+  const command = new PutObjectCommand({
+    Bucket: bucket,
+    Key: fullKey,
+    Body: buffer,
+    ContentType: contentType,
+  });
+
+  await getS3Client().send(command);
+
+  // Öffentliche URL für Hetzner Object Storage
+  const publicUrl = `https://${bucket}.nbg1.your-objectstorage.com/${fullKey}`;
+  console.log('[S3] Direct upload successful:', publicUrl);
+  return publicUrl;
+}
+
