@@ -1,7 +1,6 @@
 ---
 import ServiceCard from '../cards/ServiceCard.astro';
-import fs from 'fs/promises';
-import path from 'path';
+import { getServices } from '../../lib/data';
 
 interface Props {
   headline?: string;
@@ -17,9 +16,7 @@ const {
   showAllLink = true
 } = Astro.props;
 
-const servicesPath = path.join(process.cwd(), 'src/data/services.json');
-const services = JSON.parse(await fs.readFile(servicesPath, 'utf-8'));
-
+const services = await getServices();
 const displayServices = limit ? services.sort((a: any, b: any) => a.order - b.order).slice(0, limit) : services.sort((a: any, b: any) => a.order - b.order);
 ---
 
@@ -31,15 +28,19 @@ const displayServices = limit ? services.sort((a: any, b: any) => a.order - b.or
     </div>
 
     <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {displayServices.map((service) => (
-        <ServiceCard
-          title={service.title}
-          description={service.shortDescription}
-          image={service.image}
-          href={`/leistungen/${service.slug}/`}
-          features={service.features}
-        />
-      ))}
+      {displayServices.map((service: any) => {
+        // Support both old format (image: string) and new format (images: array)
+        const imageUrl = service.images?.[0]?.src || service.image || '/leistungen.png';
+        return (
+          <ServiceCard
+            title={service.title}
+            description={service.shortDescription}
+            image={imageUrl}
+            href={`/leistungen/${service.slug}/`}
+            features={service.features}
+          />
+        );
+      })}
     </div>
 
     {showAllLink && limit && (

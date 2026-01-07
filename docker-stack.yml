@@ -19,6 +19,8 @@ services:
       # Admin
       - ADMIN_USER=admin
       - ADMIN_PASSWORD=Fortkamp2024!
+    volumes:
+      - galabau-data:/app/src/data
     networks:
       - public-ingress
     deploy:

@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, DeleteObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, DeleteObjectCommand, ListObjectsV2Command, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 // Umgebungsvariablen aus process.env (Docker) oder import.meta.env (Build-Zeit) lesen
@@ -205,5 +205,49 @@ export async function uploadToS3Direct(buffer: Buffer, key: string, contentType:
   const publicUrl = `https://${bucket}.nbg1.your-objectstorage.com/${key}`;
   console.log('[S3] Direct upload successful:', publicUrl);
   return publicUrl;
+}
+
+// JSON-Daten aus S3 lesen
+export async function getJsonFromS3<T>(key: string, defaultValue: T): Promise<T> {
+  try {
+    const command = new GetObjectCommand({
+      Bucket: getBucket(),
+      Key: key,
+    });
+
+    const response = await getS3Client().send(command);
+    const body = await response.Body?.transformToString();
+
+    if (body) {
+      return JSON.parse(body) as T;
+    }
+    return defaultValue;
+  } catch (error: any) {
+    // Wenn die Datei nicht existiert, Standardwert zurückgeben
+    if (error.name === 'NoSuchKey' || error.$metadata?.httpStatusCode === 404) {
+      console.log('[S3] JSON file not found, returning default:', key);
+      return defaultValue;
+    }
+    console.error('[S3] Error reading JSON:', error);
+    throw error;
+  }
+}
+
+// JSON-Daten in S3 speichern
+export async function saveJsonToS3<T>(key: string, data: T): Promise<void> {
+  const bucket = getBucket();
+  const jsonString = JSON.stringify(data, null, 2);
+
+  console.log('[S3] Saving JSON:', { key, size: jsonString.length });
+
+  const command = new PutObjectCommand({
+    Bucket: bucket,
+    Key: key,
+    Body: jsonString,
+    ContentType: 'application/json',
+  });
+
+  await getS3Client().send(command);
+  console.log('[S3] JSON saved successfully:', key);
 }
 

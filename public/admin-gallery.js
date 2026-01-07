@@ -98,7 +98,15 @@ function addService() {
 function editService(index) {
   editingServiceIndex = index;
   const service = services[index];
-  currentServiceImages = service.images || [];
+
+  // Handle both old format (image: string) and new format (images: array)
+  if (service.images && Array.isArray(service.images)) {
+    currentServiceImages = [...service.images];
+  } else if (service.image) {
+    currentServiceImages = [{ src: service.image, alt: service.title || '' }];
+  } else {
+    currentServiceImages = [];
+  }
 
   document.getElementById('service-id').value = service.id || '';
   document.getElementById('service-title').value = service.title || '';
@@ -132,10 +140,12 @@ function removeServiceImageByIndex(index) {
 }
 
 // Delete service
-function deleteService(index) {
+async function deleteService(index) {
   if (confirm('Leistung wirklich löschen?')) {
     services.splice(index, 1);
     renderServices();
+    // Auto-save after delete
+    await saveServices();
   }
 }
 
@@ -223,10 +233,12 @@ function removeProjectImageByIndex(index) {
 }
 
 // Delete project
-function deleteProject(index) {
+async function deleteProject(index) {
   if (confirm('Projekt wirklich löschen?')) {
     projects.splice(index, 1);
     renderProjects();
+    // Auto-save after delete
+    await saveProjects();
   }
 }
 

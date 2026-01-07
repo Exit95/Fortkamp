@@ -4,19 +4,19 @@ export const prerender = false;
 import Layout from '../../layouts/Layout.astro';
 import CTA from '../../components/sections/CTA.astro';
 import ServiceCard from '../../components/cards/ServiceCard.astro';
-import fs from 'fs/promises';
-import path from 'path';
+import { getServices } from '../../lib/data';
 
 const { slug } = Astro.params;
 
-const servicesPath = path.join(process.cwd(), 'src/data/services.json');
-const services = JSON.parse(await fs.readFile(servicesPath, 'utf-8'));
-
+const services = await getServices();
 const service = services.find((s: any) => s.slug === slug);
 
 if (!service) {
   return Astro.redirect('/404');
 }
+
+// Support both old format (image: string) and new format (images: array)
+const serviceImage = service.images?.[0]?.src || service.image || '/leistungen.png';
 
 const relatedServices = services
   .filter((s: any) => s.id !== service.id)
@@ -50,7 +50,7 @@ const relatedServices = services
         </div>
         <div>
           <img
-            src={service.image}
+            src={serviceImage}
             alt={service.title}
             class="rounded-xl shadow-lg w-full h-auto"
             loading="eager"
