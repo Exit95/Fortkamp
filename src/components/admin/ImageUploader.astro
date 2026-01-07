@@ -52,13 +52,13 @@ const { id, type, label = 'Bilder hochladen', multiple = false } = Astro.props;
 </div>
 
 <script define:vars={{ id, type, multiple }}>
-  const input = document.getElementById(id) as HTMLInputElement;
+  const input = document.getElementById(id);
   const progressContainer = document.getElementById(`${id}-progress`);
   const progressBar = document.getElementById(`${id}-progress-bar`);
   const progressText = document.getElementById(`${id}-progress-text`);
   const errorContainer = document.getElementById(`${id}-error`);
 
-  function showError(message: string) {
+  function showError(message) {
     if (errorContainer) {
       errorContainer.classList.remove('hidden');
       const p = errorContainer.querySelector('p');
@@ -67,24 +67,24 @@ const { id, type, label = 'Bilder hochladen', multiple = false } = Astro.props;
   }
 
   function hideError() {
-    errorContainer?.classList.add('hidden');
+    if (errorContainer) errorContainer.classList.add('hidden');
   }
 
   function showProgress() {
-    progressContainer?.classList.remove('hidden');
+    if (progressContainer) progressContainer.classList.remove('hidden');
   }
 
   function hideProgress() {
-    progressContainer?.classList.add('hidden');
+    if (progressContainer) progressContainer.classList.add('hidden');
     if (progressBar) progressBar.style.width = '0%';
   }
 
-  function updateProgress(percent: number, text: string) {
+  function updateProgress(percent, text) {
     if (progressBar) progressBar.style.width = `${percent}%`;
     if (progressText) progressText.textContent = text;
   }
 
-  async function uploadFile(file: File, slugOrId: string): Promise<{ url: string; key: string; alt: string }> {
+  async function uploadFile(file, slugOrId) {
     hideError();
     showProgress();
     updateProgress(10, 'Vorbereitung...');
@@ -139,16 +139,18 @@ const { id, type, label = 'Bilder hochladen', multiple = false } = Astro.props;
   }
 
   // Export function globally
-  (window as any)[`uploadImage_${id}`] = uploadFile;
+  window[`uploadImage_${id}`] = uploadFile;
 
   // Optional: Auto-upload on file select
-  input?.addEventListener('change', async (e) => {
-    const files = (e.target as HTMLInputElement).files;
-    if (!files || files.length === 0) return;
+  if (input) {
+    input.addEventListener('change', async (e) => {
+      const files = e.target.files;
+      if (!files || files.length === 0) return;
 
-    // Trigger custom event with files
-    const event = new CustomEvent('filesSelected', { detail: { files } });
-    input.dispatchEvent(event);
-  });
+      // Trigger custom event with files
+      const event = new CustomEvent('filesSelected', { detail: { files } });
+      input.dispatchEvent(event);
+    });
+  }
 </script>
 
