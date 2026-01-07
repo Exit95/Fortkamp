@@ -19,7 +19,8 @@ services:
       # Admin
       - ADMIN_USER=admin
       - ADMIN_PASSWORD=Fortkamp2024!
-    # Kein lokales Volume nötig - Daten werden in S3 gespeichert
+    volumes:
+      - fortkamp-data:/app/src/data
     networks:
       - public-ingress
     deploy:
@@ -44,3 +45,7 @@ services:
 networks:
   public-ingress:
     external: true
+
+volumes:
+  fortkamp-data:
+    driver: local
