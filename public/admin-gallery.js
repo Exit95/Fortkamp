@@ -136,10 +136,15 @@ function renderServiceImages() {
   const list = document.getElementById('service-images-list');
   if (!list) return;
 
+  if (currentServiceImages.length === 0) {
+    list.innerHTML = '<p style="color: #6b7280; font-size: 0.875rem;">Keine Bilder vorhanden</p>';
+    return;
+  }
+
   list.innerHTML = currentServiceImages.map((img, i) => `
-    <div class="relative">
-      <img src="${img.src}" alt="${img.alt || ''}" class="w-full h-24 object-cover rounded">
-      <button type="button" onclick="removeServiceImageByIndex(${i})" class="absolute top-1 right-1 bg-red-600 text-white px-2 py-1 rounded text-xs">×</button>
+    <div style="position: relative;">
+      <img src="${img.src}" alt="${img.alt || ''}" style="width: 100%; height: 6rem; object-fit: cover; border-radius: 0.25rem;">
+      <button type="button" onclick="removeServiceImageByIndex(${i})" style="position: absolute; top: 0.25rem; right: 0.25rem; background-color: #dc2626; color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; border: none; cursor: pointer;">×</button>
     </div>
   `).join('');
 }
@@ -229,10 +234,15 @@ function renderProjectImages() {
   const list = document.getElementById('project-images-list');
   if (!list) return;
 
+  if (currentProjectImages.length === 0) {
+    list.innerHTML = '<p style="color: #6b7280; font-size: 0.875rem;">Keine Bilder vorhanden</p>';
+    return;
+  }
+
   list.innerHTML = currentProjectImages.map((img, i) => `
-    <div class="relative">
-      <img src="${img.src}" alt="${img.alt || ''}" class="w-full h-24 object-cover rounded">
-      <button type="button" onclick="removeProjectImageByIndex(${i})" class="absolute top-1 right-1 bg-red-600 text-white px-2 py-1 rounded text-xs">×</button>
+    <div style="position: relative;">
+      <img src="${img.src}" alt="${img.alt || ''}" style="width: 100%; height: 6rem; object-fit: cover; border-radius: 0.25rem;">
+      <button type="button" onclick="removeProjectImageByIndex(${i})" style="position: absolute; top: 0.25rem; right: 0.25rem; background-color: #dc2626; color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; border: none; cursor: pointer;">×</button>
     </div>
   `).join('');
 }
