@@ -17,7 +17,8 @@ export default defineConfig({
   ],
   output: 'server',
   adapter: node({
-    mode: 'standalone'
+    mode: 'standalone',
+    experimentalErrorPageHost: 'http://localhost:4321'
   }),
   build: {
     inlineStylesheets: 'auto'
