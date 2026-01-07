@@ -1,13 +1,12 @@
 ---
 import config from '../../data/config.json';
-import services from '../../data/services.json';
 
 const currentYear = new Date().getFullYear();
 ---
 
 <footer class="bg-neutral-900 text-white">
   <div class="container py-16">
-    <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+    <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
       <div>
         <div class="mb-6">
           <img
@@ -41,19 +40,6 @@ const currentYear = new Date().getFullYear();
             </svg>
           </a>
         </div>
-      </div>
-
-      <div>
-        <h3 class="font-heading font-bold text-lg mb-6">Leistungen</h3>
-        <ul class="space-y-3">
-          {services.sort((a, b) => a.order - b.order).map((service) => (
-            <li>
-              <a href={`/leistungen/${service.slug}/`} class="text-neutral-400 hover:text-white transition-colors text-sm">
-                {service.title}
-              </a>
-            </li>
-          ))}
-        </ul>
       </div>
 
       <div>

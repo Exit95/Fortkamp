@@ -28,6 +28,9 @@ COPY --from=builder /app/package.json ./
 # Copy data files (needed for API routes)
 COPY --from=builder /app/src/data ./src/data
 
+# Create data directory for sessions
+RUN mkdir -p ./data/sessions
+
 # Set environment variables
 ENV HOST=0.0.0.0
 ENV PORT=4321

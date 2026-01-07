@@ -17,10 +17,12 @@ export default defineConfig({
   ],
   output: 'server',
   adapter: node({
-    mode: 'standalone',
-    experimentalErrorPageHost: 'http://localhost:4321'
+    mode: 'standalone'
   }),
   build: {
     inlineStylesheets: 'auto'
+  },
+  session: {
+    driver: 'fs'
   }
 });
