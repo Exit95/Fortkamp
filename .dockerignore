@@ -20,3 +20,7 @@ fix-network.sh
 .astro
 .codesandbox
 
+# Dynamic data files (loaded from S3 at runtime)
+src/data/services.json
+src/data/projects.json
+

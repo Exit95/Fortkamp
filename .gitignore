@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Dynamic data files (managed via S3/Admin)
+src/data/services.json
+src/data/projects.json

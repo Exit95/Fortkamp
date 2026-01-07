@@ -26,31 +26,39 @@ const {
 } = Astro.props;
 ---
 
-<section class="relative min-h-[90vh] flex items-center pt-20">
+<!-- Hero Section with optimized mobile experience -->
+<section class="relative min-h-[100svh] sm:min-h-[90vh] flex items-center pt-16 sm:pt-20">
+  <!-- Background image with lazy loading for mobile optimization -->
   <div class="absolute inset-0 z-0">
     <img
       src={backgroundImage}
       alt=""
       class="w-full h-full object-cover"
       loading="eager"
+      fetchpriority="high"
+      decoding="async"
     />
-    <div class="absolute inset-0 bg-gradient-to-r from-neutral-900/85 via-neutral-900/70 to-neutral-900/40"></div>
+    <!-- Gradient overlay - optimized for mobile readability -->
+    <div class="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-neutral-900/90 via-neutral-900/75 to-neutral-900/50 sm:from-neutral-900/85 sm:via-neutral-900/70 sm:to-neutral-900/40"></div>
   </div>
 
-  <div class="container relative z-10 py-20 lg:py-32">
+  <div class="container relative z-10 py-12 sm:py-16 lg:py-32">
     <div class="max-w-2xl">
-      <h1 class="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+      <!-- Headline with responsive typography -->
+      <h1 class="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.15] mb-4 sm:mb-6">
         {headline}
       </h1>
 
-      <p class="text-lg md:text-xl text-neutral-200 mb-8 leading-relaxed">
+      <!-- Subheadline -->
+      <p class="text-base sm:text-lg md:text-xl text-neutral-200 mb-6 sm:mb-8 leading-relaxed">
         {subheadline}
       </p>
 
-      <div class="flex flex-col sm:flex-row gap-4">
+      <!-- CTA Buttons - Stack on mobile, row on larger screens -->
+      <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
         <a
           href={ctaPrimary.href}
-          class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors"
+          class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 active:bg-green-800 transition-colors touch-manipulation"
           data-track="hero_cta_primary"
         >
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -63,7 +71,7 @@ const {
           href={ctaSecondary.href}
           target={ctaSecondary.href.startsWith('http') ? '_blank' : undefined}
           rel={ctaSecondary.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-          class="inline-flex items-center justify-center gap-2 px-6 py-3.5 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-neutral-900 transition-colors"
+          class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-neutral-900 active:bg-neutral-100 transition-colors touch-manipulation"
           data-track="hero_cta_secondary"
         >
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -73,22 +81,23 @@ const {
         </a>
       </div>
 
+      <!-- Trust Indicators - Responsive grid on mobile -->
       {showTrustIndicators && (
-        <div class="flex flex-wrap gap-x-8 gap-y-4 mt-12 pt-8 border-t border-white/20">
+        <div class="grid grid-cols-1 sm:flex sm:flex-wrap gap-3 sm:gap-x-8 sm:gap-y-4 mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-white/20">
           <div class="flex items-center gap-2 text-white">
-            <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
             <span class="text-sm font-medium">3 Jahre Erfahrung</span>
           </div>
           <div class="flex items-center gap-2 text-white">
-            <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
             <span class="text-sm font-medium">66+ Zufriedene Kunden</span>
           </div>
           <div class="flex items-center gap-2 text-white">
-            <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
             <span class="text-sm font-medium">Lokaler Service in Ahaus</span>
@@ -96,5 +105,12 @@ const {
         </div>
       )}
     </div>
+  </div>
+
+  <!-- Scroll indicator for mobile -->
+  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 sm:hidden animate-bounce">
+    <svg class="w-6 h-6 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+    </svg>
   </div>
 </section>
