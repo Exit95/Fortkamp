@@ -87,11 +87,10 @@ const serviceImage = serviceImages[0]?.src || '/leistungen.png';
         <h2 class="section-heading text-center mb-12">Impressionen</h2>
         <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {serviceImages.map((img: { src: string; alt?: string }, index: number) => (
-            <a
-              href={img.src}
-              target="_blank"
-              rel="noopener"
-              class="block overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow group"
+            <button
+              type="button"
+              class="lightbox-trigger group block overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500"
+              data-index={index}
             >
               <img
                 src={img.src}
@@ -99,11 +98,75 @@ const serviceImage = serviceImages[0]?.src || '/leistungen.png';
                 class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                 loading="lazy"
               />
-            </a>
+            </button>
           ))}
         </div>
       </div>
     </section>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="fixed inset-0 bg-black/90 z-50 hidden items-center justify-center">
+      <button id="lightbox-close" class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300 z-10">&times;</button>
+
+      <button id="lightbox-prev" class="absolute left-4 top-1/2 -translate-y-1/2 text-white text-5xl hover:text-gray-300 z-10 p-2">&#8249;</button>
+      <button id="lightbox-next" class="absolute right-4 top-1/2 -translate-y-1/2 text-white text-5xl hover:text-gray-300 z-10 p-2">&#8250;</button>
+
+      <img id="lightbox-img" src="" alt="" class="max-h-[90vh] max-w-[90vw] object-contain" />
+
+      <div id="lightbox-counter" class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm"></div>
+    </div>
+
+    <script define:vars={{ images: serviceImages }}>
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const lightboxCounter = document.getElementById('lightbox-counter');
+      const triggers = document.querySelectorAll('.lightbox-trigger');
+      let currentIndex = 0;
+
+      function showImage(index) {
+        if (index < 0) index = images.length - 1;
+        if (index >= images.length) index = 0;
+        currentIndex = index;
+        lightboxImg.src = images[index].src;
+        lightboxImg.alt = images[index].alt || '';
+        lightboxCounter.textContent = `${index + 1} / ${images.length}`;
+      }
+
+      function openLightbox(index) {
+        showImage(index);
+        lightbox.classList.remove('hidden');
+        lightbox.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLightbox() {
+        lightbox.classList.add('hidden');
+        lightbox.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+
+      triggers.forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          const index = parseInt(trigger.dataset.index);
+          openLightbox(index);
+        });
+      });
+
+      document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+      document.getElementById('lightbox-prev').addEventListener('click', () => showImage(currentIndex - 1));
+      document.getElementById('lightbox-next').addEventListener('click', () => showImage(currentIndex + 1));
+
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (lightbox.classList.contains('hidden')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') showImage(currentIndex - 1);
+        if (e.key === 'ArrowRight') showImage(currentIndex + 1);
+      });
+    </script>
   )}
 
   <CTA
