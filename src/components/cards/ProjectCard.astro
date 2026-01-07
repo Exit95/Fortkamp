@@ -11,38 +11,66 @@ interface Props {
 const { title, client, location, image, href, services = [] } = Astro.props;
 ---
 
-<a href={href} class="group block card overflow-hidden">
-  <div class="relative h-56 overflow-hidden">
+<a
+  href={href}
+  class="group block card overflow-hidden touch-manipulation active:scale-[0.99] transition-transform"
+  aria-label={`Projekt ansehen: ${title}`}
+>
+  <!-- Responsive image container with aspect ratio -->
+  <div class="relative aspect-[4/3] sm:aspect-[16/10] overflow-hidden bg-neutral-100">
     <img
       src={image}
-      alt={title}
-      class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+      alt={`${title} - ${location}`}
+      class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
       loading="lazy"
+      decoding="async"
+      fetchpriority="low"
     />
-    <div class="absolute inset-0 bg-gradient-to-t from-neutral-900/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-    <div class="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform">
-      <span class="text-white text-sm font-medium">Projekt ansehen</span>
+    <!-- Gradient overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-neutral-900/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    <!-- Hover action indicator -->
+    <div class="absolute bottom-0 left-0 right-0 p-3 sm:p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+      <span class="inline-flex items-center gap-1.5 text-white text-sm font-medium">
+        Projekt ansehen
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </span>
     </div>
   </div>
-  <div class="p-6">
-    <div class="flex items-center gap-2 text-sm text-neutral-500 mb-2">
-      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+
+  <!-- Content section with responsive padding -->
+  <div class="p-4 sm:p-5 md:p-6">
+    <!-- Location badge -->
+    <div class="flex items-center gap-1.5 text-xs sm:text-sm text-neutral-500 mb-2">
+      <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
-      <span>{location}</span>
+      <span class="truncate">{location}</span>
     </div>
-    <h3 class="font-heading text-lg font-bold text-neutral-900 mb-1 group-hover:text-green-700 transition-colors">
+
+    <!-- Title -->
+    <h3 class="font-heading text-base sm:text-lg font-bold text-neutral-900 mb-1 group-hover:text-green-700 transition-colors line-clamp-2">
       {title}
     </h3>
-    <p class="text-neutral-600 text-sm mb-3">{client}</p>
+
+    <!-- Client -->
+    <p class="text-neutral-600 text-xs sm:text-sm mb-3 truncate">{client}</p>
+
+    <!-- Service tags -->
     {services.length > 0 && (
-      <div class="flex flex-wrap gap-2">
-        {services.slice(0, 3).map((service) => (
-          <span class="px-2 py-1 bg-green-50 text-green-700 text-xs font-medium rounded">
+      <div class="flex flex-wrap gap-1.5 sm:gap-2">
+        {services.slice(0, 2).map((service) => (
+          <span class="px-2 py-0.5 sm:py-1 bg-green-50 text-green-700 text-[10px] sm:text-xs font-medium rounded">
             {service}
           </span>
         ))}
+        {services.length > 2 && (
+          <span class="px-2 py-0.5 sm:py-1 bg-neutral-100 text-neutral-600 text-[10px] sm:text-xs font-medium rounded">
+            +{services.length - 2}
+          </span>
+        )}
       </div>
     )}
   </div>

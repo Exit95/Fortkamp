@@ -10,6 +10,10 @@ interface Props {
   image?: string;
   noIndex?: boolean;
   headerVariant?: 'transparent' | 'solid';
+  type?: 'website' | 'article' | 'service' | 'project';
+  keywords?: string[];
+  publishedTime?: string;
+  modifiedTime?: string;
 }
 
 const {
@@ -17,22 +21,49 @@ const {
   description = config.seo.defaultDescription,
   image = '/fortkamplogo.jpeg',
   noIndex = false,
-  headerVariant = 'solid'
+  headerVariant = 'solid',
+  type = 'website',
+  keywords = [],
+  publishedTime,
+  modifiedTime
 } = Astro.props;
 
 const fullTitle = title ? `${title} | ${config.company.name}` : config.seo.defaultTitle;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const imageURL = image.startsWith('http') ? image : new URL(image, Astro.site).toString();
 
-const structuredData = {
+// Default keywords + page-specific
+const allKeywords = [
+  'Garten- und Landschaftsbau',
+  'Galabau',
+  'Ahaus',
+  'Gartenpflege',
+  'Pflasterarbeiten',
+  'Natursteinarbeiten',
+  'Terrassenbau',
+  config.contact.address.city,
+  ...keywords
+].join(', ');
+
+// Structured Data - LocalBusiness
+const localBusinessData = {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
+  "@type": "LandscapingBusiness",
   "@id": `${Astro.site}#organization`,
   "name": config.company.name,
+  "legalName": config.company.legalName,
   "alternateName": "Garten- und Landschaftsbau Fortkamp",
   "description": config.company.description,
-  "url": Astro.site,
+  "url": Astro.site?.toString(),
+  "logo": new URL('/fortkamplogo.jpeg', Astro.site).toString(),
+  "image": imageURL,
   "telephone": config.contact.phone,
   "email": config.contact.email,
+  "founder": {
+    "@type": "Person",
+    "name": config.company.owner
+  },
+  "foundingDate": config.company.founded?.toString(),
   "address": {
     "@type": "PostalAddress",
     "streetAddress": config.contact.address.street,
@@ -41,50 +72,157 @@ const structuredData = {
     "addressRegion": config.contact.address.state,
     "addressCountry": "DE"
   },
-  "areaServed": {
-    "@type": "GeoCircle",
-    "geoMidpoint": {
-      "@type": "GeoCoordinates",
-      "latitude": "52.0766",
-      "longitude": "7.0127"
-    },
-    "geoRadius": "30000"
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "52.0766",
+    "longitude": "7.0127"
   },
-  "priceRange": "$$"
+  "areaServed": [
+    { "@type": "City", "name": "Ahaus" },
+    { "@type": "City", "name": "Gronau" },
+    { "@type": "City", "name": "Stadtlohn" },
+    { "@type": "City", "name": "Vreden" },
+    { "@type": "City", "name": "Heek" },
+    { "@type": "City", "name": "Legden" }
+  ],
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "07:00",
+      "closes": "18:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Saturday",
+      "opens": "08:00",
+      "closes": "16:00"
+    }
+  ],
+  "priceRange": "$$",
+  "paymentAccepted": ["Cash", "Bank Transfer"],
+  "currenciesAccepted": "EUR",
+  "sameAs": [
+    config.social?.instagram,
+    config.social?.facebook
+  ].filter(Boolean)
 };
+
+// WebPage structured data
+const webPageData = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": fullTitle,
+  "description": description,
+  "url": canonicalURL.toString(),
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": config.company.name,
+    "url": Astro.site?.toString()
+  },
+  "about": { "@id": `${Astro.site}#organization` },
+  ...(publishedTime && { "datePublished": publishedTime }),
+  ...(modifiedTime && { "dateModified": modifiedTime })
+};
+
+// BreadcrumbList
+const pathSegments = Astro.url.pathname.split('/').filter(Boolean);
+const breadcrumbItems = [
+  { name: 'Startseite', url: Astro.site?.toString() || '/' }
+];
+
+let currentPath = '';
+pathSegments.forEach((segment, index) => {
+  currentPath += `/${segment}`;
+  const name = segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' ');
+  breadcrumbItems.push({
+    name: decodeURIComponent(name),
+    url: new URL(currentPath + '/', Astro.site).toString()
+  });
+});
+
+const breadcrumbData = breadcrumbItems.length > 1 ? {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": breadcrumbItems.map((item, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "name": item.name,
+    "item": item.url
+  }))
+} : null;
 ---
 
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" itemscope itemtype="https://schema.org/WebPage">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
+  <!-- Primary Meta Tags -->
   <title>{fullTitle}</title>
+  <meta name="title" content={fullTitle} />
   <meta name="description" content={description} />
-  {noIndex && <meta name="robots" content="noindex, nofollow" />}
+  <meta name="keywords" content={allKeywords} />
+  <meta name="author" content={config.company.name} />
+  <meta name="robots" content={noIndex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
+  <meta name="googlebot" content={noIndex ? "noindex, nofollow" : "index, follow"} />
 
+  <!-- Geographic Tags -->
+  <meta name="geo.region" content="DE-NW" />
+  <meta name="geo.placename" content={config.contact.address.city} />
+  <meta name="geo.position" content="52.0766;7.0127" />
+  <meta name="ICBM" content="52.0766, 7.0127" />
+
+  <!-- Canonical & Alternate -->
   <link rel="canonical" href={canonicalURL} />
-  <link rel="icon" type="image/png" href="/favicon.png" />
-  <link rel="apple-touch-icon" href="/fortkamplogo.jpeg" />
 
-  <meta property="og:type" content="website" />
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/fortkamplogo.jpeg" />
+  <meta name="theme-color" content="#16a34a" />
+  <meta name="msapplication-TileColor" content="#16a34a" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content={type === 'article' ? 'article' : 'website'} />
+  <meta property="og:site_name" content={config.company.name} />
   <meta property="og:url" content={canonicalURL} />
   <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description} />
-  <meta property="og:image" content={new URL(image, Astro.site)} />
+  <meta property="og:image" content={imageURL} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content={fullTitle} />
   <meta property="og:locale" content="de_DE" />
+  {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+  {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
 
+  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={fullTitle} />
   <meta name="twitter:description" content={description} />
-  <meta name="twitter:image" content={new URL(image, Astro.site)} />
+  <meta name="twitter:image" content={imageURL} />
+  <meta name="twitter:image:alt" content={fullTitle} />
 
+  <!-- Performance: Preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://danapfel-digital.nbg1.your-objectstorage.com" />
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://danapfel-digital.nbg1.your-objectstorage.com" />
+
+  <!-- Fonts with display swap for better performance -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet" />
 
-  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+  <!-- Structured Data: LocalBusiness -->
+  <script type="application/ld+json" set:html={JSON.stringify(localBusinessData)} />
+
+  <!-- Structured Data: WebPage -->
+  <script type="application/ld+json" set:html={JSON.stringify(webPageData)} />
+
+  <!-- Structured Data: Breadcrumbs -->
+  {breadcrumbData && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbData)} />}
 </head>
 <body class="font-body">
   <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-green-600 focus:text-white focus:rounded-lg">

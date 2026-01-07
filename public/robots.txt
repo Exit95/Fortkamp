@@ -1,0 +1,37 @@
+# Robots.txt for Galabau Fortkamp
+# https://galabau-fortkamp.de
+
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://galabau-fortkamp.de/sitemap.xml
+
+# Crawl-delay (optional, für höfliches Crawling)
+Crawl-delay: 1
+
+# Disallow admin and API routes
+Disallow: /admin
+Disallow: /api/
+
+# Allow important assets
+Allow: /fortkamplogo.jpeg
+Allow: /*.css
+Allow: /*.js
+Allow: /*.png
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.webp
+
+# Googlebot specific
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
