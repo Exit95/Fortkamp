@@ -1,6 +1,5 @@
 ---
 import config from '../../data/config.json';
-import services from '../../data/services.json';
 
 interface Props {
   variant?: 'transparent' | 'solid';
@@ -10,7 +9,7 @@ const { variant = 'solid' } = Astro.props;
 
 const navItems = [
   { label: 'Startseite', href: '/' },
-  { label: 'Leistungen', href: '/leistungen/', hasDropdown: true },
+  { label: 'Leistungen', href: '/leistungen/' },
   { label: 'Projekte', href: '/projekte/' },
   { label: 'Kontakt', href: '/kontakt/' }
 ];
@@ -36,36 +35,15 @@ const navItems = [
 
       <nav class="hidden lg:flex items-center gap-8" aria-label="Hauptnavigation">
         {navItems.map((item) => (
-          <div class="relative group">
-            <a
-              href={item.href}
-              class:list={[
-                "text-sm font-medium transition-colors py-2",
-                variant === 'transparent' ? 'text-white hover:text-green-200' : 'text-neutral-700 hover:text-green-600'
-              ]}
-            >
-              {item.label}
-              {item.hasDropdown && (
-                <svg class="inline-block w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              )}
-            </a>
-            {item.hasDropdown && (
-              <div class="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                <div class="bg-white rounded-lg shadow-lg border border-neutral-100 py-2 min-w-[200px]">
-                  {services.sort((a, b) => a.order - b.order).map((service) => (
-                    <a
-                      href={`/leistungen/${service.slug}/`}
-                      class="block px-4 py-2 text-sm text-neutral-700 hover:bg-green-50 hover:text-green-700 transition-colors"
-                    >
-                      {service.title}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+          <a
+            href={item.href}
+            class:list={[
+              "text-sm font-medium transition-colors py-2",
+              variant === 'transparent' ? 'text-white hover:text-green-200' : 'text-neutral-700 hover:text-green-600'
+            ]}
+          >
+            {item.label}
+          </a>
         ))}
       </nav>
 
