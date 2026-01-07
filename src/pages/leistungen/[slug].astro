@@ -16,7 +16,13 @@ if (!service) {
 }
 
 // Support both old format (image: string) and new format (images: array)
-const serviceImage = service.images?.[0]?.src || service.image || '/leistungen.png';
+const serviceImages = service.images && Array.isArray(service.images) && service.images.length > 0
+  ? service.images
+  : service.image
+    ? [{ src: service.image, alt: service.title }]
+    : [{ src: '/leistungen.png', alt: service.title }];
+
+const serviceImage = serviceImages[0]?.src || '/leistungen.png';
 
 const relatedServices = services
   .filter((s: any) => s.id !== service.id)
@@ -78,6 +84,32 @@ const relatedServices = services
       </div>
     </div>
   </section>
+
+  {/* Bildergalerie - nur anzeigen wenn mehr als 1 Bild */}
+  {serviceImages.length > 1 && (
+    <section class="section bg-neutral-50">
+      <div class="container">
+        <h2 class="section-heading text-center mb-12">Impressionen</h2>
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {serviceImages.map((img: { src: string; alt?: string }, index: number) => (
+            <a
+              href={img.src}
+              target="_blank"
+              rel="noopener"
+              class="block overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow group"
+            >
+              <img
+                src={img.src}
+                alt={img.alt || `${service.title} Bild ${index + 1}`}
+                class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+              />
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 
   {relatedServices.length > 0 && (
     <section class="section bg-neutral-50">
