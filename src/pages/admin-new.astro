@@ -24,11 +24,11 @@ if (Astro.request.method === 'POST') {
 
     if (username === ADMIN_USER && password === ADMIN_PASS) {
       await Astro.session?.set('user', ADMIN_USER);
-      isLoggedIn = true;
+      return Astro.redirect('/admin-new');
     }
   } else if (action === 'logout') {
     await Astro.session?.destroy();
-    isLoggedIn = false;
+    return Astro.redirect('/admin-new');
   }
 }
 ---
