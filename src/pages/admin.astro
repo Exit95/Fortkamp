@@ -41,7 +41,7 @@ if (Astro.request.method === 'POST') {
     <div class="min-h-screen flex items-center justify-center">
       <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
         <div class="text-center mb-8">
-          <h1 class="text-3xl font-bold text-green-700">🌿 Galabau Fortkamp</h1>
+          <h1 class="text-3xl font-bold text-green-700">Galabau Fortkamp</h1>
           <p class="text-gray-500 mt-2">Admin-Bereich</p>
         </div>
         <form method="POST" class="space-y-4">
@@ -82,7 +82,7 @@ if (Astro.request.method === 'POST') {
   <div id="app">
     <header class="bg-green-700 text-white shadow-lg">
       <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 class="text-2xl font-bold">🌿 Admin Panel</h1>
+        <h1 class="text-2xl font-bold">Admin Panel</h1>
         <div class="flex items-center gap-4">
           <span class="text-green-200">Angemeldet als: {ADMIN_USER}</span>
           <form method="POST" class="inline">
@@ -100,10 +100,10 @@ if (Astro.request.method === 'POST') {
     <div class="max-w-7xl mx-auto px-4 py-6">
       <div class="flex gap-4 mb-6">
         <button id="tab-services" onclick="showTab('services')" class="tab-btn active px-6 py-3 bg-white rounded-lg shadow font-medium">
-          📋 Leistungen
+          Leistungen
         </button>
         <button id="tab-projects" onclick="showTab('projects')" class="tab-btn px-6 py-3 bg-white rounded-lg shadow font-medium opacity-60">
-          🏗️ Projekte
+          Projekte
         </button>
       </div>
 
@@ -120,7 +120,7 @@ if (Astro.request.method === 'POST') {
             <!-- Services werden hier geladen -->
           </div>
           <button onclick="saveServices()" class="mt-6 w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700">
-            💾 Alle Änderungen speichern
+            Alle Änderungen speichern
           </button>
         </div>
       </div>
@@ -138,7 +138,7 @@ if (Astro.request.method === 'POST') {
             <!-- Projects werden hier geladen -->
           </div>
           <button onclick="saveProjects()" class="mt-6 w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700">
-            💾 Alle Änderungen speichern
+            Alle Änderungen speichern
           </button>
         </div>
       </div>
@@ -398,7 +398,7 @@ if (Astro.request.method === 'POST') {
             <p class="text-sm text-gray-500">${p.client} - ${p.location}</p>
           </div>
           <span class="${p.featured ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-600'} px-2 py-1 rounded text-xs">
-            ${p.featured ? '⭐ Featured' : 'Normal'}
+            ${p.featured ? 'Featured' : 'Normal'}
           </span>
           <button onclick="editProject(${i})" class="bg-blue-500 text-white px-3 py-1 rounded">Bearbeiten</button>
           <button onclick="deleteProject(${i})" class="bg-red-500 text-white px-3 py-1 rounded">Löschen</button>

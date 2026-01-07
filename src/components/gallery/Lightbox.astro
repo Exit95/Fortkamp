@@ -1,0 +1,142 @@
+---
+// Lightbox für Bildergalerie
+---
+
+<div id="lightbox" class="fixed inset-0 bg-black/95 z-50 hidden flex items-center justify-center">
+  <!-- Close Button -->
+  <button
+    id="lightbox-close"
+    class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300 z-10"
+    aria-label="Schließen"
+  >
+    ×
+  </button>
+
+  <!-- Previous Button -->
+  <button
+    id="lightbox-prev"
+    class="absolute left-4 top-1/2 -translate-y-1/2 text-white text-5xl hover:text-gray-300 z-10"
+    aria-label="Vorheriges Bild"
+  >
+    ‹
+  </button>
+
+  <!-- Next Button -->
+  <button
+    id="lightbox-next"
+    class="absolute right-4 top-1/2 -translate-y-1/2 text-white text-5xl hover:text-gray-300 z-10"
+    aria-label="Nächstes Bild"
+  >
+    ›
+  </button>
+
+  <!-- Image Container -->
+  <div class="relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center p-8">
+    <img
+      id="lightbox-image"
+      src=""
+      alt=""
+      class="max-w-full max-h-full object-contain"
+    />
+  </div>
+
+  <!-- Image Counter -->
+  <div id="lightbox-counter" class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-lg">
+    <span id="lightbox-current">1</span> / <span id="lightbox-total">1</span>
+  </div>
+</div>
+
+<script>
+  let currentIndex = 0;
+  let images: { src: string; alt: string }[] = [];
+
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImage = document.getElementById('lightbox-image') as HTMLImageElement;
+  const lightboxCurrent = document.getElementById('lightbox-current');
+  const lightboxTotal = document.getElementById('lightbox-total');
+  const closeBtn = document.getElementById('lightbox-close');
+  const prevBtn = document.getElementById('lightbox-prev');
+  const nextBtn = document.getElementById('lightbox-next');
+
+  function openLightbox(index: number, imageList: { src: string; alt: string }[]) {
+    images = imageList;
+    currentIndex = index;
+    updateLightbox();
+    lightbox?.classList.remove('hidden');
+    lightbox?.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox?.classList.add('hidden');
+    lightbox?.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  function updateLightbox() {
+    if (images.length === 0) return;
+
+    const image = images[currentIndex];
+    if (lightboxImage) {
+      lightboxImage.src = image.src;
+      lightboxImage.alt = image.alt;
+    }
+    if (lightboxCurrent) lightboxCurrent.textContent = String(currentIndex + 1);
+    if (lightboxTotal) lightboxTotal.textContent = String(images.length);
+  }
+
+  function showNext() {
+    currentIndex = (currentIndex + 1) % images.length;
+    updateLightbox();
+  }
+
+  function showPrev() {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    updateLightbox();
+  }
+
+  // Event Listeners
+  closeBtn?.addEventListener('click', closeLightbox);
+  nextBtn?.addEventListener('click', showNext);
+  prevBtn?.addEventListener('click', showPrev);
+
+  // Click outside image to close
+  lightbox?.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox?.classList.contains('flex')) return;
+
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') showNext();
+    if (e.key === 'ArrowLeft') showPrev();
+  });
+
+  // Touch/Swipe support for mobile
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  lightbox?.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  });
+
+  lightbox?.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  });
+
+  function handleSwipe() {
+    const swipeThreshold = 50;
+    if (touchStartX - touchEndX > swipeThreshold) {
+      showNext();
+    } else if (touchEndX - touchStartX > swipeThreshold) {
+      showPrev();
+    }
+  }
+
+  // Global function to open lightbox from anywhere
+  (window as any).openLightbox = openLightbox;
+</script>
+

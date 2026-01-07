@@ -1,0 +1,33 @@
+---
+import { SERVICE_CATEGORIES } from '../../lib/types';
+
+interface Props {
+  id: string;
+  label?: string;
+  required?: boolean;
+  value?: string;
+}
+
+const { id, label = 'Leistungskategorie', required = false, value = '' } = Astro.props;
+---
+
+<div>
+  <label for={id} class="block text-sm font-medium mb-1">
+    {label}
+    {required && <span class="text-red-500">*</span>}
+  </label>
+  <select
+    id={id}
+    name={id}
+    required={required}
+    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+  >
+    <option value="">-- Bitte wählen --</option>
+    {SERVICE_CATEGORIES.map((category) => (
+      <option value={category} selected={value === category}>
+        {category}
+      </option>
+    ))}
+  </select>
+</div>
+

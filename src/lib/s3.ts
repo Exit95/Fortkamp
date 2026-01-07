@@ -59,17 +59,59 @@ export function isS3Configured(): boolean {
   return !!(endpoint && accessKey && secretKey && bucket);
 }
 
-export async function getUploadUrl(filename: string, contentType: string): Promise<string> {
-  const key = `${getPrefix()}${Date.now()}-${filename}`;
+// Dateinamen sanitizen
+export function sanitizeFilename(filename: string): string {
+  const ext = filename.split('.').pop() || '';
+  const nameWithoutExt = filename.replace(`.${ext}`, '');
+  const sanitized = nameWithoutExt
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '-')
+    .replace(/-+/g, '-')
+    .substring(0, 50);
+  const timestamp = Date.now();
+  const random = Math.random().toString(36).substring(2, 8);
+  return `${timestamp}_${random}_${sanitized}.${ext}`;
+}
+
+// Prefix für Upload-Typ generieren
+export function getUploadPrefix(type: 'service' | 'project' | 'general', slugOrId?: string): string {
+  const basePrefix = getPrefix();
+  switch (type) {
+    case 'service':
+      return `${basePrefix}uploads/services/${slugOrId || 'general'}/`;
+    case 'project':
+      return `${basePrefix}uploads/projects/${slugOrId || 'general'}/`;
+    case 'general':
+      return `${basePrefix}uploads/general/`;
+    default:
+      return `${basePrefix}uploads/tmp/`;
+  }
+}
+
+// Presigned URL für Upload generieren
+export async function getPresignedUploadUrl(
+  type: 'service' | 'project' | 'general',
+  slugOrId: string,
+  filename: string,
+  contentType: string
+): Promise<{ uploadUrl: string; publicUrl: string; key: string }> {
+  const sanitizedFilename = sanitizeFilename(filename);
+  const prefix = getUploadPrefix(type, slugOrId);
+  const key = `${prefix}${sanitizedFilename}`;
+  const bucket = getBucket();
+
+  console.log('[S3] Generating presigned URL:', { type, slugOrId, key, contentType });
 
   const command = new PutObjectCommand({
-    Bucket: getBucket(),
+    Bucket: bucket,
     Key: key,
     ContentType: contentType,
   });
 
-  const signedUrl = await getSignedUrl(getS3Client(), command, { expiresIn: 3600 });
-  return signedUrl;
+  const uploadUrl = await getSignedUrl(getS3Client(), command, { expiresIn: 3600 });
+  const publicUrl = `https://${bucket}.nbg1.your-objectstorage.com/${key}`;
+
+  return { uploadUrl, publicUrl, key };
 }
 
 export async function uploadFile(file: Buffer, filename: string, contentType: string): Promise<string> {
@@ -94,8 +136,9 @@ export async function uploadFile(file: Buffer, filename: string, contentType: st
   return publicUrl;
 }
 
-export async function deleteFile(url: string): Promise<void> {
-  const key = url.split('.com/')[1];
+// Datei aus S3 löschen (per Key)
+export async function deleteFileByKey(key: string): Promise<void> {
+  console.log('[S3] Deleting file:', key);
 
   const command = new DeleteObjectCommand({
     Bucket: getBucket(),
@@ -103,6 +146,13 @@ export async function deleteFile(url: string): Promise<void> {
   });
 
   await getS3Client().send(command);
+  console.log('[S3] File deleted successfully');
+}
+
+// Datei aus S3 löschen (per URL) - Legacy
+export async function deleteFile(url: string): Promise<void> {
+  const key = url.split('.com/')[1];
+  return deleteFileByKey(key);
 }
 
 export async function listFiles(prefix?: string): Promise<{

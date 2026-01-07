@@ -1,0 +1,55 @@
+---
+import type { GalleryImage } from '../../lib/types';
+
+interface Props {
+  images: GalleryImage[];
+  columns?: number;
+}
+
+const { images, columns = 3 } = Astro.props;
+
+// Sortiere Bilder nach order
+const sortedImages = [...images].sort((a, b) => a.order - b.order);
+
+const gridClass = {
+  2: 'grid-cols-1 md:grid-cols-2',
+  3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+  4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
+}[columns] || 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+---
+
+<div class={`grid ${gridClass} gap-4`}>
+  {sortedImages.map((image, index) => (
+    <div
+      class="relative group cursor-pointer overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+      data-lightbox-index={index}
+    >
+      <img
+        src={image.url}
+        alt={image.alt}
+        class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+        loading="lazy"
+      />
+      <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+        <span class="text-white text-4xl opacity-0 group-hover:opacity-100 transition-opacity">
+          🔍
+        </span>
+      </div>
+    </div>
+  ))}
+</div>
+
+<script define:vars={{ sortedImages }}>
+  // Add click handlers to open lightbox
+  document.querySelectorAll('[data-lightbox-index]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const index = parseInt(el.getAttribute('data-lightbox-index') || '0');
+      const imageList = sortedImages.map((img) => ({
+        src: img.url,
+        alt: img.alt,
+      }));
+      (window as any).openLightbox(index, imageList);
+    });
+  });
+</script>
+

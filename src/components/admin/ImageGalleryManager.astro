@@ -1,0 +1,210 @@
+---
+// Image Gallery Manager für Admin Panel
+interface Props {
+  id: string;
+  label?: string;
+}
+
+const { id, label = 'Bildergalerie' } = Astro.props;
+---
+
+<div class="image-gallery-manager">
+  <label class="block text-sm font-medium mb-2">{label}</label>
+  
+  <!-- Image Grid -->
+  <div id={`${id}-grid`} class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
+    <!-- Images will be rendered here -->
+  </div>
+
+  <!-- Empty State -->
+  <div id={`${id}-empty`} class="text-center py-8 text-gray-400">
+    <svg class="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>
+    <p>Noch keine Bilder hochgeladen</p>
+  </div>
+</div>
+
+<style>
+  .image-item {
+    position: relative;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: #f3f4f6;
+    aspect-ratio: 1;
+  }
+
+  .image-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .image-item-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .image-item:hover .image-item-overlay {
+    opacity: 1;
+  }
+
+  .image-item-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-delete {
+    background: #ef4444;
+    color: white;
+  }
+
+  .btn-delete:hover {
+    background: #dc2626;
+  }
+
+  .btn-move {
+    background: #3b82f6;
+    color: white;
+  }
+
+  .btn-move:hover {
+    background: #2563eb;
+  }
+
+  .btn-edit-alt {
+    background: #10b981;
+    color: white;
+  }
+
+  .btn-edit-alt:hover {
+    background: #059669;
+  }
+</style>
+
+<script define:vars={{ id }}>
+  let images: { url: string; key: string; alt: string; order: number }[] = [];
+
+  function renderImages() {
+    const grid = document.getElementById(`${id}-grid`);
+    const empty = document.getElementById(`${id}-empty`);
+
+    if (!grid || !empty) return;
+
+    if (images.length === 0) {
+      grid.innerHTML = '';
+      empty.classList.remove('hidden');
+      return;
+    }
+
+    empty.classList.add('hidden');
+
+    // Sort by order
+    const sorted = [...images].sort((a, b) => a.order - b.order);
+
+    grid.innerHTML = sorted
+      .map(
+        (img, index) => `
+      <div class="image-item" data-index="${index}">
+        <img src="${img.url}" alt="${img.alt}" />
+        <div class="image-item-overlay">
+          <button class="image-item-btn btn-edit-alt" onclick="editAlt_${id}(${index})">
+            ✏️ Alt-Text
+          </button>
+          <div class="flex gap-2">
+            <button class="image-item-btn btn-move" onclick="moveUp_${id}(${index})" ${index === 0 ? 'disabled' : ''}>
+              ↑
+            </button>
+            <button class="image-item-btn btn-move" onclick="moveDown_${id}(${index})" ${index === sorted.length - 1 ? 'disabled' : ''}>
+              ↓
+            </button>
+          </div>
+          <button class="image-item-btn btn-delete" onclick="deleteImage_${id}(${index})">
+            🗑️ Löschen
+          </button>
+        </div>
+      </div>
+    `
+      )
+      .join('');
+  }
+
+  function addImage(url: string, key: string, alt: string) {
+    const maxOrder = images.length > 0 ? Math.max(...images.map((i) => i.order)) : 0;
+    images.push({ url, key, alt, order: maxOrder + 1 });
+    renderImages();
+  }
+
+  function deleteImage(index: number) {
+    if (confirm('Bild wirklich löschen?')) {
+      const img = images[index];
+      // Delete from S3
+      fetch('/api/upload/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: img.key }),
+      }).catch(console.error);
+
+      images.splice(index, 1);
+      renderImages();
+    }
+  }
+
+  function moveUp(index: number) {
+    if (index === 0) return;
+    const temp = images[index].order;
+    images[index].order = images[index - 1].order;
+    images[index - 1].order = temp;
+    renderImages();
+  }
+
+  function moveDown(index: number) {
+    if (index === images.length - 1) return;
+    const temp = images[index].order;
+    images[index].order = images[index + 1].order;
+    images[index + 1].order = temp;
+    renderImages();
+  }
+
+  function editAlt(index: number) {
+    const newAlt = prompt('Alt-Text bearbeiten:', images[index].alt);
+    if (newAlt !== null) {
+      images[index].alt = newAlt;
+      renderImages();
+    }
+  }
+
+  function getImages() {
+    return images;
+  }
+
+  function setImages(newImages: typeof images) {
+    images = newImages;
+    renderImages();
+  }
+
+  // Export functions globally
+  (window as any)[`addImage_${id}`] = addImage;
+  (window as any)[`deleteImage_${id}`] = deleteImage;
+  (window as any)[`moveUp_${id}`] = moveUp;
+  (window as any)[`moveDown_${id}`] = moveDown;
+  (window as any)[`editAlt_${id}`] = editAlt;
+  (window as any)[`getImages_${id}`] = getImages;
+  (window as any)[`setImages_${id}`] = setImages;
+
+  // Initial render
+  renderImages();
+</script>
+

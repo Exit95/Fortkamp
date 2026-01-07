@@ -1,0 +1,154 @@
+---
+// Image Uploader Component für Admin Panel
+interface Props {
+  id: string;
+  type: 'service' | 'project';
+  label?: string;
+  multiple?: boolean;
+}
+
+const { id, type, label = 'Bilder hochladen', multiple = false } = Astro.props;
+---
+
+<div class="image-uploader">
+  <label class="block text-sm font-medium mb-2">{label}</label>
+  
+  <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-green-500 transition-colors">
+    <input
+      type="file"
+      id={id}
+      accept="image/jpeg,image/jpg,image/png,image/webp"
+      multiple={multiple}
+      class="hidden"
+    />
+    <label
+      for={id}
+      class="cursor-pointer flex flex-col items-center gap-2"
+    >
+      <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+      </svg>
+      <span class="text-sm text-gray-600">
+        Klicken zum Hochladen oder Drag & Drop
+      </span>
+      <span class="text-xs text-gray-500">
+        JPG, PNG oder WebP (max. 10MB)
+      </span>
+    </label>
+  </div>
+
+  <!-- Upload Progress -->
+  <div id={`${id}-progress`} class="hidden mt-4">
+    <div class="bg-gray-200 rounded-full h-2 overflow-hidden">
+      <div id={`${id}-progress-bar`} class="bg-green-600 h-full transition-all duration-300" style="width: 0%"></div>
+    </div>
+    <p id={`${id}-progress-text`} class="text-sm text-gray-600 mt-1">Uploading...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div id={`${id}-error`} class="hidden mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+    <p class="text-sm text-red-600"></p>
+  </div>
+</div>
+
+<script define:vars={{ id, type, multiple }}>
+  const input = document.getElementById(id) as HTMLInputElement;
+  const progressContainer = document.getElementById(`${id}-progress`);
+  const progressBar = document.getElementById(`${id}-progress-bar`);
+  const progressText = document.getElementById(`${id}-progress-text`);
+  const errorContainer = document.getElementById(`${id}-error`);
+
+  function showError(message: string) {
+    if (errorContainer) {
+      errorContainer.classList.remove('hidden');
+      const p = errorContainer.querySelector('p');
+      if (p) p.textContent = message;
+    }
+  }
+
+  function hideError() {
+    errorContainer?.classList.add('hidden');
+  }
+
+  function showProgress() {
+    progressContainer?.classList.remove('hidden');
+  }
+
+  function hideProgress() {
+    progressContainer?.classList.add('hidden');
+    if (progressBar) progressBar.style.width = '0%';
+  }
+
+  function updateProgress(percent: number, text: string) {
+    if (progressBar) progressBar.style.width = `${percent}%`;
+    if (progressText) progressText.textContent = text;
+  }
+
+  async function uploadFile(file: File, slugOrId: string): Promise<{ url: string; key: string; alt: string }> {
+    hideError();
+    showProgress();
+    updateProgress(10, 'Vorbereitung...');
+
+    try {
+      // 1. Presigned URL anfordern
+      const presignResponse = await fetch('/api/upload/presign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type,
+          slugOrId,
+          filename: file.name,
+          contentType: file.type,
+        }),
+      });
+
+      if (!presignResponse.ok) {
+        const error = await presignResponse.json();
+        throw new Error(error.error || 'Failed to get upload URL');
+      }
+
+      const { uploadUrl, publicUrl, key } = await presignResponse.json();
+      updateProgress(30, 'Hochladen...');
+
+      // 2. Datei zu S3 hochladen
+      const uploadResponse = await fetch(uploadUrl, {
+        method: 'PUT',
+        body: file,
+        headers: {
+          'Content-Type': file.type,
+        },
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error('Upload to S3 failed');
+      }
+
+      updateProgress(100, 'Fertig!');
+      hideProgress();
+
+      return {
+        url: publicUrl,
+        key,
+        alt: file.name.replace(/\.[^/.]+$/, ''),
+      };
+    } catch (error) {
+      hideProgress();
+      showError(error instanceof Error ? error.message : 'Upload fehlgeschlagen');
+      throw error;
+    }
+  }
+
+  // Export function globally
+  (window as any)[`uploadImage_${id}`] = uploadFile;
+
+  // Optional: Auto-upload on file select
+  input?.addEventListener('change', async (e) => {
+    const files = (e.target as HTMLInputElement).files;
+    if (!files || files.length === 0) return;
+
+    // Trigger custom event with files
+    const event = new CustomEvent('filesSelected', { detail: { files } });
+    input.dispatchEvent(event);
+  });
+</script>
+

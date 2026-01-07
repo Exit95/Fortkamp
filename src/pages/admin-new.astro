@@ -1,0 +1,261 @@
+---
+import ImageUploader from '../components/admin/ImageUploader.astro';
+import ImageGalleryManager from '../components/admin/ImageGalleryManager.astro';
+import ServiceCategorySelect from '../components/admin/ServiceCategorySelect.astro';
+
+export const prerender = false;
+
+// Login credentials aus Umgebungsvariablen
+const ADMIN_USER = process.env.ADMIN_USER || 'admin';
+const ADMIN_PASS = process.env.ADMIN_PASSWORD || '';
+
+// Check session
+const session = await Astro.session?.get('user');
+let isLoggedIn = session === ADMIN_USER;
+
+// Handle login form
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  const action = formData.get('action');
+
+  if (action === 'login') {
+    const username = formData.get('username');
+    const password = formData.get('password');
+
+    if (username === ADMIN_USER && password === ADMIN_PASS) {
+      await Astro.session?.set('user', ADMIN_USER);
+      isLoggedIn = true;
+    }
+  } else if (action === 'logout') {
+    await Astro.session?.destroy();
+    isLoggedIn = false;
+  }
+}
+---
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Galabau Fortkamp</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  {!isLoggedIn ? (
+    <div class="min-h-screen flex items-center justify-center">
+      <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
+        <div class="text-center mb-8">
+          <h1 class="text-3xl font-bold text-green-700">Galabau Fortkamp</h1>
+          <p class="text-gray-500 mt-2">Admin-Bereich</p>
+        </div>
+        <form method="POST" class="space-y-4">
+          <input type="hidden" name="action" value="login" />
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Benutzername</label>
+            <input
+              type="text"
+              name="username"
+              required
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              placeholder="Benutzername eingeben"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Passwort</label>
+            <input
+              type="password"
+              name="password"
+              required
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              placeholder="Passwort eingeben"
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors"
+          >
+            Anmelden
+          </button>
+        </form>
+        <p class="mt-6 text-center text-sm text-gray-500">
+          <a href="/" class="text-green-600 hover:underline">← Zurück zur Website</a>
+        </p>
+      </div>
+    </div>
+  ) : (
+  <div id="app">
+    <header class="bg-green-700 text-white shadow-lg">
+      <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Admin Panel</h1>
+        <div class="flex items-center gap-4">
+          <span class="text-green-200">Angemeldet als: {ADMIN_USER}</span>
+          <form method="POST" class="inline">
+            <input type="hidden" name="action" value="logout" />
+            <button type="submit" class="bg-green-800 hover:bg-green-900 px-3 py-1 rounded text-sm">
+              Abmelden
+            </button>
+          </form>
+          <a href="/" class="text-green-200 hover:text-white">← Zur Website</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Tabs -->
+    <div class="max-w-7xl mx-auto px-4 py-6">
+      <div class="flex gap-4 mb-6">
+        <button id="tab-services" onclick="showTab('services')" class="tab-btn active px-6 py-3 bg-white rounded-lg shadow font-medium">
+          Leistungen
+        </button>
+        <button id="tab-projects" onclick="showTab('projects')" class="tab-btn px-6 py-3 bg-white rounded-lg shadow font-medium opacity-60">
+          Projekte
+        </button>
+      </div>
+
+      <!-- Services Tab -->
+      <div id="services-tab" class="tab-content">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold">Leistungen verwalten</h2>
+            <button onclick="addService()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+              + Neue Leistung
+            </button>
+          </div>
+          <div id="services-list" class="space-y-4">
+            <!-- Services werden hier geladen -->
+          </div>
+          <button onclick="saveServices()" class="mt-6 w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700">
+            Alle Änderungen speichern
+          </button>
+        </div>
+      </div>
+
+      <!-- Projects Tab -->
+      <div id="projects-tab" class="tab-content hidden">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold">Projekte verwalten</h2>
+            <button onclick="addProject()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+              + Neues Projekt
+            </button>
+          </div>
+          <div id="projects-list" class="space-y-4">
+            <!-- Projects werden hier geladen -->
+          </div>
+          <button onclick="saveProjects()" class="mt-6 w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700">
+            Alle Änderungen speichern
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Service Edit Modal -->
+  <div id="service-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6">
+        <h3 class="text-xl font-bold mb-4">Leistung bearbeiten</h3>
+        <form id="service-form" class="space-y-4">
+          <input type="hidden" id="service-id">
+          <input type="hidden" id="service-index">
+          
+          <ServiceCategorySelect id="service-title" label="Leistungskategorie" required={true} />
+          
+          <div>
+            <label class="block text-sm font-medium mb-1">Slug (URL)</label>
+            <input type="text" id="service-slug" class="w-full border rounded-lg px-4 py-2" required>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Kurzbeschreibung</label>
+            <textarea id="service-description" class="w-full border rounded-lg px-4 py-2" rows="2"></textarea>
+          </div>
+
+          <!-- Image Gallery Manager -->
+          <div class="border-t pt-4">
+            <ImageGalleryManager id="service-gallery" label="Bildergalerie" />
+            <div class="mt-4">
+              <ImageUploader id="service-uploader" type="service" label="Neues Bild hochladen" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Features (eine pro Zeile)</label>
+            <textarea id="service-features" class="w-full border rounded-lg px-4 py-2" rows="4"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Reihenfolge</label>
+            <input type="number" id="service-order" class="w-full border rounded-lg px-4 py-2" min="1">
+          </div>
+
+          <div class="flex gap-4 pt-4">
+            <button type="submit" class="flex-1 bg-green-600 text-white py-2 rounded-lg">Speichern</button>
+            <button type="button" onclick="closeServiceModal()" class="flex-1 bg-gray-300 py-2 rounded-lg">Abbrechen</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project Edit Modal -->
+  <div id="project-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6">
+        <h3 class="text-xl font-bold mb-4">Projekt bearbeiten</h3>
+        <form id="project-form" class="space-y-4">
+          <input type="hidden" id="project-id">
+          <input type="hidden" id="project-index">
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Titel</label>
+            <input type="text" id="project-title" class="w-full border rounded-lg px-4 py-2" required>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Slug (URL)</label>
+            <input type="text" id="project-slug" class="w-full border rounded-lg px-4 py-2" required>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Kunde</label>
+              <input type="text" id="project-client" class="w-full border rounded-lg px-4 py-2">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Ort</label>
+              <input type="text" id="project-location" class="w-full border rounded-lg px-4 py-2">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Zusammenfassung</label>
+            <textarea id="project-summary" class="w-full border rounded-lg px-4 py-2" rows="3"></textarea>
+          </div>
+
+          <!-- Image Gallery Manager -->
+          <div class="border-t pt-4">
+            <ImageGalleryManager id="project-gallery" label="Bildergalerie" />
+            <div class="mt-4">
+              <ImageUploader id="project-uploader" type="project" label="Neues Bild hochladen" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Featured</label>
+            <input type="checkbox" id="project-featured" class="w-5 h-5">
+          </div>
+
+          <div class="flex gap-4 pt-4">
+            <button type="submit" class="flex-1 bg-green-600 text-white py-2 rounded-lg">Speichern</button>
+            <button type="button" onclick="closeProjectModal()" class="flex-1 bg-gray-300 py-2 rounded-lg">Abbrechen</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline src="/admin-gallery.js"></script>
+  )}
+</body>
+</html>
+
