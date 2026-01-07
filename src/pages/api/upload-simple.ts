@@ -6,6 +6,16 @@ export const prerender = false;
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
+// Umgebungsvariablen lesen
+const getEnv = (key: string, defaultValue: string = ''): string => {
+  // @ts-ignore
+  const metaEnvValue = typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env[key] : undefined;
+  const processEnvValue = typeof process !== 'undefined' && process.env ? process.env[key] : undefined;
+  return metaEnvValue || processEnvValue || defaultValue;
+};
+
+const getPrefix = () => getEnv('S3_PREFIX', 'galabau/');
+
 export const POST: APIRoute = async (context) => {
   try {
     console.log('[Upload] Request received');
@@ -64,11 +74,12 @@ export const POST: APIRoute = async (context) => {
     console.log('[Upload] Buffer created:', buffer.length, 'bytes');
 
     // S3 Key generieren
+    const prefix = getPrefix();
     const timestamp = Date.now();
     const random = Math.random().toString(36).substring(2, 8);
     const sanitizedName = file.name.replace(/[^a-z0-9.]/gi, '-').toLowerCase();
     const filename = `${timestamp}_${random}_${sanitizedName}`;
-    const s3Key = `${type}/${category}/${filename}`;
+    const s3Key = `${prefix}uploads/${type}/${category}/${filename}`;
     console.log('[Upload] S3 Key:', s3Key);
 
     // Upload zu S3
