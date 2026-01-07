@@ -273,59 +273,75 @@ async function saveProjects() {
 }
 
 // Handle image upload for services
-document.getElementById('service-uploader')?.addEventListener('filesSelected', async (e) => {
-  const files = e.detail.files;
-  const slug = document.getElementById('service-slug').value || 'general';
+function setupServiceUploader() {
+  const uploader = document.getElementById('service-uploader');
+  if (!uploader) return;
 
-  for (const file of files) {
-    try {
-      const uploadFn = window.uploadImage_serviceuploader;
-      if (!uploadFn) {
-        console.error('Upload function not found');
-        continue;
+  uploader.addEventListener('filesSelected', async (e) => {
+    const files = e.detail.files;
+    const slug = document.getElementById('service-slug').value || 'general';
+
+    for (const file of files) {
+      try {
+        const uploadFn = window.uploadImage_serviceuploader;
+        if (!uploadFn) {
+          console.error('Upload function not found');
+          continue;
+        }
+
+        const result = await uploadFn(file, slug);
+
+        // Add to gallery
+        const addImageFn = window.addImage_servicegallery;
+        if (addImageFn) {
+          addImageFn(result.url, result.key, result.alt);
+        }
+      } catch (error) {
+        console.error('Upload failed:', error);
       }
-
-      const result = await uploadFn(file, slug);
-
-      // Add to gallery
-      const addImageFn = window.addImage_servicegallery;
-      if (addImageFn) {
-        addImageFn(result.url, result.key, result.alt);
-      }
-    } catch (error) {
-      console.error('Upload failed:', error);
     }
-  }
-});
+  });
+}
 
 // Handle image upload for projects
-document.getElementById('project-uploader')?.addEventListener('filesSelected', async (e) => {
-  const files = e.detail.files;
-  const slug = document.getElementById('project-slug').value || 'general';
+function setupProjectUploader() {
+  const uploader = document.getElementById('project-uploader');
+  if (!uploader) return;
 
-  for (const file of files) {
-    try {
-      const uploadFn = window.uploadImage_projectuploader;
-      if (!uploadFn) {
-        console.error('Upload function not found');
-        continue;
+  uploader.addEventListener('filesSelected', async (e) => {
+    const files = e.detail.files;
+    const slug = document.getElementById('project-slug').value || 'general';
+
+    for (const file of files) {
+      try {
+        const uploadFn = window.uploadImage_projectuploader;
+        if (!uploadFn) {
+          console.error('Upload function not found');
+          continue;
+        }
+
+        const result = await uploadFn(file, slug);
+
+        // Add to gallery
+        const addImageFn = window.addImage_projectgallery;
+        if (addImageFn) {
+          addImageFn(result.url, result.key, result.alt);
+        }
+      } catch (error) {
+        console.error('Upload failed:', error);
       }
-
-      const result = await uploadFn(file, slug);
-
-      // Add to gallery
-      const addImageFn = window.addImage_projectgallery;
-      if (addImageFn) {
-        addImageFn(result.url, result.key, result.alt);
-      }
-    } catch (error) {
-      console.error('Upload failed:', error);
     }
-  }
-});
+  });
+}
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
   loadData();
+
+  // Setup uploaders after a short delay to ensure components are loaded
+  setTimeout(() => {
+    setupServiceUploader();
+    setupProjectUploader();
+  }, 100);
 });
 
