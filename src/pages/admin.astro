@@ -229,12 +229,29 @@ if (Astro.request.method === 'POST') {
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium mb-1">Kunde</label>
-              <input type="text" id="project-client" class="w-full border rounded-lg px-4 py-2">
+              <input type="text" id="project-client" class="w-full border rounded-lg px-4 py-2" placeholder="z.B. Privat, Familie Müller, Firma XY">
             </div>
             <div>
               <label class="block text-sm font-medium mb-1">Ort</label>
               <input type="text" id="project-location" class="w-full border rounded-lg px-4 py-2">
             </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Projekttyp</label>
+            <select id="project-clientType" class="w-full border rounded-lg px-4 py-2">
+              <option value="private">Privatkunde</option>
+              <option value="commercial">Gewerbekunde</option>
+              <option value="property">Hausverwaltung</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium mb-1">Durchgeführte Leistungen</label>
+            <div id="project-services-checkboxes" class="grid grid-cols-2 gap-2 p-3 border rounded-lg max-h-48 overflow-y-auto">
+              <!-- Services werden per JavaScript geladen -->
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Wähle die Leistungen, die bei diesem Projekt durchgeführt wurden</p>
           </div>
 
           <div>

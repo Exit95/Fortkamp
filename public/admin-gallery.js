@@ -193,6 +193,32 @@ document.getElementById('service-form')?.addEventListener('submit', async (e) =>
   closeServiceModal();
 });
 
+// Render services checkboxes for project form
+function renderServicesCheckboxes(selectedServices = []) {
+  const container = document.getElementById('project-services-checkboxes');
+  if (!container) return;
+
+  if (services.length === 0) {
+    container.innerHTML = '<p style="color: #6b7280; font-size: 0.875rem;">Keine Leistungen vorhanden</p>';
+    return;
+  }
+
+  container.innerHTML = services.map(service => `
+    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+      <input type="checkbox" name="project-services" value="${service.slug}"
+        ${selectedServices.includes(service.slug) ? 'checked' : ''}
+        style="width: 1rem; height: 1rem;">
+      <span style="font-size: 0.875rem;">${service.title}</span>
+    </label>
+  `).join('');
+}
+
+// Get selected services from checkboxes
+function getSelectedServices() {
+  const checkboxes = document.querySelectorAll('input[name="project-services"]:checked');
+  return Array.from(checkboxes).map(cb => cb.value);
+}
+
 // Add new project
 function addProject() {
   editingProjectIndex = -1;
@@ -202,9 +228,12 @@ function addProject() {
   document.getElementById('project-slug').value = '';
   document.getElementById('project-client').value = '';
   document.getElementById('project-location').value = '';
+  document.getElementById('project-clientType').value = 'private';
   document.getElementById('project-summary').value = '';
   document.getElementById('project-featured').checked = false;
   document.getElementById('project-images-list').innerHTML = '';
+
+  renderServicesCheckboxes([]);
 
   document.getElementById('project-modal').classList.remove('hidden');
 }
@@ -220,8 +249,12 @@ function editProject(index) {
   document.getElementById('project-slug').value = project.slug || '';
   document.getElementById('project-client').value = project.client || '';
   document.getElementById('project-location').value = project.location || '';
+  document.getElementById('project-clientType').value = project.clientType || 'private';
   document.getElementById('project-summary').value = project.summary || '';
   document.getElementById('project-featured').checked = project.featured || false;
+
+  // Render services checkboxes with selected values
+  renderServicesCheckboxes(project.services || []);
 
   // Render existing images
   renderProjectImages();
@@ -276,11 +309,12 @@ document.getElementById('project-form')?.addEventListener('submit', async (e) =>
     slug: document.getElementById('project-slug').value,
     title: document.getElementById('project-title').value,
     client: document.getElementById('project-client').value,
+    clientType: document.getElementById('project-clientType').value,
     location: document.getElementById('project-location').value,
     summary: document.getElementById('project-summary').value,
     featured: document.getElementById('project-featured').checked,
     images: currentProjectImages,
-    services: [],
+    services: getSelectedServices(),
     tags: []
   };
 
