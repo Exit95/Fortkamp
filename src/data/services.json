@@ -1,104 +1,121 @@
 [
   {
-    "id": "gartenpflege",
-    "slug": "gartenpflege",
-    "title": "Beispiel Leistung",
-    "shortDescription": "Professionelle Pflege für Ihren Garten - von Rasenmähen bis Heckenschnitt.",
-    "icon": "leaf",
+    "id": "neugestaltung",
+    "slug": "neugestaltung",
+    "title": "Neugestaltung",
+    "shortDescription": "Komplette Neuanlage und Gestaltung Ihres Gartens nach Ihren Wünschen.",
+    "icon": "sparkles",
     "image": "/leistungen.png",
     "features": [
-      "Rasenmähen und Rasenpflege",
-      "Heckenschnitt und Formschnitt",
-      "Unkrautbekämpfung",
-      "Beetpflege und Bepflanzung",
-      "Bewässerungssysteme",
-      "Saisonale Gartenpflege"
+      "Gartenplanung und Konzeption",
+      "Neuanlage von Gärten",
+      "Terrassengestaltung",
+      "Bepflanzungskonzepte",
+      "Rasenanlage",
+      "Wege und Einfassungen"
     ],
     "order": 1
   },
   {
-    "id": "landschaftsbau",
-    "slug": "landschaftsbau",
-    "title": "Beispiel Leistung",
-    "shortDescription": "Gestaltung und Neuanlage von Gärten, Terrassen und Außenanlagen.",
-    "icon": "tree",
+    "id": "umgestaltung",
+    "slug": "umgestaltung",
+    "title": "Umgestaltung",
+    "shortDescription": "Modernisierung und Umgestaltung bestehender Gartenanlagen.",
+    "icon": "refresh",
     "image": "/leistungen.png",
     "features": [
-      "Gartenplanung und -gestaltung",
-      "Neuanlage von Gärten",
-      "Terrassenbau",
-      "Mauerbau und Hangbefestigung",
-      "Teich- und Wasserbau",
-      "Rollrasenverlegung"
+      "Bestandsanalyse",
+      "Modernisierung alter Gärten",
+      "Neue Gestaltungselemente",
+      "Optimierung der Nutzflächen",
+      "Erneuerung von Bepflanzungen",
+      "Anpassung an neue Bedürfnisse"
     ],
     "order": 2
   },
   {
     "id": "pflasterarbeiten",
     "slug": "pflasterarbeiten",
-    "title": "Beispiel Leistung",
-    "shortDescription": "Einfahrten, Wege und Terrassen fachgerecht gepflastert.",
+    "title": "Pflasterarbeiten",
+    "shortDescription": "Fachgerechte Pflasterung von Einfahrten, Wegen und Terrassen.",
     "icon": "grid",
     "image": "/leistungen.png",
     "features": [
       "Einfahrten und Parkplätze",
       "Gartenwege",
       "Terrassenpflasterung",
-      "Natursteinarbeiten",
       "Randsteine und Einfassungen",
+      "Entwässerungssysteme",
       "Sanierung bestehender Flächen"
     ],
     "order": 3
   },
   {
-    "id": "zaunbau",
-    "slug": "zaunbau",
-    "title": "Beispiel Leistung",
-    "shortDescription": "Hochwertige Zäune und Sichtschutz für Ihr Grundstück.",
-    "icon": "fence",
+    "id": "natursteinarbeiten",
+    "slug": "natursteinarbeiten",
+    "title": "Natursteinarbeiten",
+    "shortDescription": "Hochwertige Arbeiten mit Naturstein für zeitlose Eleganz.",
+    "icon": "mountain",
     "image": "/leistungen.png",
     "features": [
-      "Metallzäune",
-      "Holzzäune",
-      "Doppelstabmattenzäune",
-      "Sichtschutzelemente",
-      "Tore und Eingänge",
-      "Gabionen"
+      "Natursteinmauern",
+      "Natursteinpflaster",
+      "Trockenmauern",
+      "Natursteintreppen",
+      "Hangbefestigungen",
+      "Ziersteinelemente"
     ],
     "order": 4
   },
   {
-    "id": "baumarbeiten",
-    "slug": "baumarbeiten",
-    "title": "Beispiel Leistung",
-    "shortDescription": "Professionelle Baumpflege, Baumschnitt und Baumfällung.",
-    "icon": "tree-pine",
+    "id": "pflegearbeiten",
+    "slug": "pflegearbeiten",
+    "title": "Pflegearbeiten",
+    "shortDescription": "Regelmäßige Gartenpflege für einen gepflegten Außenbereich.",
+    "icon": "leaf",
     "image": "/leistungen.png",
     "features": [
-      "Baumfällung",
-      "Baumschnitt und Kronenpflege",
-      "Stubbenfräsen",
-      "Totholzentfernung",
-      "Obstbaumschnitt",
-      "Baumgutachten"
+      "Rasenmähen und Rasenpflege",
+      "Beetpflege",
+      "Unkrautbekämpfung",
+      "Gehölzschnitt",
+      "Laubbeseitigung",
+      "Saisonale Pflegepakete"
     ],
     "order": 5
   },
   {
-    "id": "winterdienst",
-    "slug": "winterdienst",
-    "title": "Beispiel Leistung",
-    "shortDescription": "Zuverlässiger Räum- und Streudienst im Winter - 24/7 erreichbar.",
-    "icon": "snowflake",
+    "id": "heckenschnitt",
+    "slug": "heckenschnitt",
+    "title": "Heckenschnitt",
+    "shortDescription": "Professioneller Schnitt und Pflege Ihrer Hecken.",
+    "icon": "scissors",
     "image": "/leistungen.png",
     "features": [
-      "Schneeräumung",
-      "Streudienst",
-      "24/7 Bereitschaft",
-      "Gewerbliche Objekte",
-      "Private Grundstücke",
-      "Dokumentation für Hausverwaltungen"
+      "Formschnitt",
+      "Rückschnitt",
+      "Verjüngungsschnitt",
+      "Heckenpflege",
+      "Sichtschutzhecken",
+      "Entsorgung des Schnittguts"
     ],
     "order": 6
+  },
+  {
+    "id": "baggervermietung",
+    "slug": "baggervermietung",
+    "title": "Baggervermietung",
+    "shortDescription": "Minibagger und Kleingeräte zur Miete - mit oder ohne Fahrer.",
+    "icon": "truck",
+    "image": "/leistungen.png",
+    "features": [
+      "Minibagger verschiedener Größen",
+      "Mit oder ohne Fahrer",
+      "Flexible Mietzeiten",
+      "Lieferung und Abholung",
+      "Einweisung inklusive",
+      "Faire Mietpreise"
+    ],
+    "order": 7
   }
 ]
