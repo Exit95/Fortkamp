@@ -3,7 +3,6 @@ export const prerender = false;
 
 import Layout from '../../layouts/Layout.astro';
 import CTA from '../../components/sections/CTA.astro';
-import ServiceCard from '../../components/cards/ServiceCard.astro';
 import { getServices } from '../../lib/data';
 
 const { slug } = Astro.params;
@@ -23,10 +22,6 @@ const serviceImages = service.images && Array.isArray(service.images) && service
     : [{ src: '/leistungen.png', alt: service.title }];
 
 const serviceImage = serviceImages[0]?.src || '/leistungen.png';
-
-const relatedServices = services
-  .filter((s: any) => s.id !== service.id)
-  .slice(0, 3);
 ---
 
 <Layout
@@ -105,25 +100,6 @@ const relatedServices = services
                 loading="lazy"
               />
             </a>
-          ))}
-        </div>
-      </div>
-    </section>
-  )}
-
-  {relatedServices.length > 0 && (
-    <section class="section bg-neutral-50">
-      <div class="container">
-        <h2 class="section-heading text-center mb-12">Weitere Leistungen</h2>
-        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {relatedServices.map((related) => (
-            <ServiceCard
-              title={related.title}
-              description={related.shortDescription}
-              image={related.image}
-              href={`/leistungen/${related.slug}/`}
-              features={related.features}
-            />
           ))}
         </div>
       </div>
