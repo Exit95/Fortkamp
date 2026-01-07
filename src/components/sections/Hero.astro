@@ -1,10 +1,11 @@
 ---
 import config from '../../data/config.json';
+import LightRays from '../LightRays';
 
 interface Props {
   headline: string;
   subheadline: string;
-  backgroundImage: string;
+  backgroundImage?: string;
   ctaPrimary?: {
     label: string;
     href: string;
@@ -14,6 +15,7 @@ interface Props {
     href: string;
   };
   showTrustIndicators?: boolean;
+  useLightRays?: boolean;
 }
 
 const {
@@ -22,24 +24,45 @@ const {
   backgroundImage,
   ctaPrimary = { label: 'Jetzt anrufen', href: `tel:${config.contact.phone}` },
   ctaSecondary = { label: 'WhatsApp schreiben', href: `https://wa.me/${config.contact.whatsapp}?text=Hallo,%20ich%20interessiere%20mich%20f%C3%BCr%20Ihre%20Leistungen.` },
-  showTrustIndicators = true
+  showTrustIndicators = true,
+  useLightRays = false
 } = Astro.props;
 ---
 
 <!-- Hero Section with optimized mobile experience -->
 <section class="relative min-h-[100svh] sm:min-h-[90vh] flex items-center pt-16 sm:pt-20">
-  <!-- Background image with lazy loading for mobile optimization -->
+  <!-- Background -->
   <div class="absolute inset-0 z-0">
-    <img
-      src={backgroundImage}
-      alt=""
-      class="w-full h-full object-cover"
-      loading="eager"
-      fetchpriority="high"
-      decoding="async"
-    />
-    <!-- Gradient overlay - optimized for mobile readability -->
-    <div class="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-neutral-900/90 via-neutral-900/75 to-neutral-900/50 sm:from-neutral-900/85 sm:via-neutral-900/70 sm:to-neutral-900/40"></div>
+    {useLightRays ? (
+      <>
+        <div class="absolute inset-0 bg-neutral-900"></div>
+        <LightRays
+          client:load
+          raysOrigin="top-center"
+          raysColor="#22c55e"
+          raysSpeed={1.2}
+          lightSpread={0.9}
+          rayLength={1.5}
+          followMouse={true}
+          mouseInfluence={0.08}
+          noiseAmount={0.05}
+          distortion={0.03}
+        />
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-neutral-900/30 to-neutral-900/70"></div>
+      </>
+    ) : (
+      <>
+        <img
+          src={backgroundImage}
+          alt=""
+          class="w-full h-full object-cover"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <div class="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-neutral-900/90 via-neutral-900/75 to-neutral-900/50 sm:from-neutral-900/85 sm:via-neutral-900/70 sm:to-neutral-900/40"></div>
+      </>
+    )}
   </div>
 
   <div class="container relative z-10 py-12 sm:py-16 lg:py-32">
