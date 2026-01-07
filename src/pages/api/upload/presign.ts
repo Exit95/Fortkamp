@@ -6,11 +6,20 @@ export const prerender = false;
 
 // Erlaubte Dateitypen
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async (context) => {
   try {
-    const body: PresignRequest = await request.json();
+    // Session-Prüfung
+    const session = await context.session?.get('user');
+    if (!session) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized - Please login first' }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const body: PresignRequest = await context.request.json();
     const { type, slugOrId, filename, contentType } = body;
 
     // Validierung
