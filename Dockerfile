@@ -25,8 +25,8 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
 
-# Copy config file only (services/projects are loaded from S3)
-COPY --from=builder /app/src/data/config.json ./src/data/config.json
+# Copy data files (lokaler Fallback wenn S3 nicht konfiguriert)
+COPY --from=builder /app/src/data ./src/data
 
 # Create data directory for sessions
 RUN mkdir -p ./data/sessions
