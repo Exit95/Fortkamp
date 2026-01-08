@@ -3,6 +3,7 @@ export const prerender = false;
 
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/sections/Hero.astro';
+import GradientTransition from '../components/sections/GradientTransition.astro';
 import Services from '../components/sections/Services.astro';
 import About from '../components/sections/About.astro';
 import Projects from '../components/sections/Projects.astro';
@@ -15,6 +16,8 @@ import CTA from '../components/sections/CTA.astro';
     subheadline="Professionelle Gartenpflege, Landschaftsbau und Winterdienst - zuverlässig, kompetent und lokal. Wir verwandeln Ihre Außenbereiche in grüne Oasen."
     useLightRays={true}
   />
+
+  <GradientTransition height="150px" />
 
   <Services limit={6} />
 
