@@ -1,13 +1,16 @@
-import { getJsonFromS3, isS3Configured } from './s3';
+import { getJsonFromS3, isS3Configured, getPrefix } from './s3';
 
-const S3_SERVICES_KEY = 'galabau/data/services.json';
-const S3_PROJECTS_KEY = 'galabau/data/projects.json';
+// Dynamischer Pfad basierend auf S3_PREFIX
+const getServicesKey = () => `${getPrefix()}data/services.json`;
+const getProjectsKey = () => `${getPrefix()}data/projects.json`;
 
 // Services laden (immer aus S3 - keine lokalen Fallback-Dateien mehr)
 export async function getServices(): Promise<any[]> {
   try {
     if (isS3Configured()) {
-      return await getJsonFromS3(S3_SERVICES_KEY, []);
+      const key = getServicesKey();
+      console.log('[Data] Loading services from:', key);
+      return await getJsonFromS3(key, []);
     } else {
       console.warn('[Data] S3 not configured, returning empty services');
       return [];
@@ -22,7 +25,9 @@ export async function getServices(): Promise<any[]> {
 export async function getProjects(): Promise<any[]> {
   try {
     if (isS3Configured()) {
-      return await getJsonFromS3(S3_PROJECTS_KEY, []);
+      const key = getProjectsKey();
+      console.log('[Data] Loading projects from:', key);
+      return await getJsonFromS3(key, []);
     } else {
       console.warn('[Data] S3 not configured, returning empty projects');
       return [];

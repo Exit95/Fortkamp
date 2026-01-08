@@ -40,7 +40,7 @@ function getS3Client(): S3Client {
 }
 
 const getBucket = () => getEnv('S3_BUCKET', 'danapfel-digital');
-const getPrefix = () => getEnv('S3_PREFIX', 'galabau/');
+export const getPrefix = () => getEnv('S3_PREFIX', 'galabau/');
 
 // Prüfen ob S3 konfiguriert ist
 export function isS3Configured(): boolean {
