@@ -1,35 +1,31 @@
 ---
 interface Props {
   height?: string;
-  fromColor?: string;
-  toColor?: string;
 }
 
 const {
-  height = '120px',
-  fromColor = '#171717', // neutral-900
-  toColor = '#fafafa'    // neutral-50
+  height = '120px'
 } = Astro.props;
 ---
 
 <div class="gradient-transition" style={`height: ${height};`}>
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    viewBox="0 0 1920 1080" 
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 1920 1080"
     preserveAspectRatio="none"
-    class="w-full h-full"
+    style="width: 100%; height: 100%;"
   >
     <defs>
-      <linearGradient id="hero-to-content-gradient" x1="960" y1="1079.5" x2="960" y2=".5" gradientUnits="userSpaceOnUse">
-        <stop offset="0" stop-color={toColor}/>
-        <stop offset=".14" stop-color="#fbfbfb"/>
-        <stop offset=".27" stop-color="#f0f0f0"/>
-        <stop offset=".40" stop-color="#ddd"/>
-        <stop offset=".52" stop-color="#c3c3c3"/>
-        <stop offset=".64" stop-color="#a1a1a1"/>
-        <stop offset=".76" stop-color="#787878"/>
-        <stop offset=".87" stop-color="#474848"/>
-        <stop offset=".98" stop-color={fromColor}/>
+      <linearGradient id="hero-to-content-gradient" x1="960" y1=".5" x2="960" y2="1079.5" gradientTransform="translate(0 1080) scale(1 -1)" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#fff"/>
+        <stop offset=".06" stop-color="#dfdfdf"/>
+        <stop offset=".18" stop-color="#a9aaaa"/>
+        <stop offset=".31" stop-color="#7b7c7c"/>
+        <stop offset=".43" stop-color="#565757"/>
+        <stop offset=".55" stop-color="#393a3a"/>
+        <stop offset=".67" stop-color="#242525"/>
+        <stop offset=".78" stop-color="#181919"/>
+        <stop offset=".89" stop-color="#141515"/>
       </linearGradient>
     </defs>
     <rect fill="url(#hero-to-content-gradient)" x="0" y="0" width="1920" height="1080"/>
@@ -39,7 +35,7 @@ const {
 <style>
   .gradient-transition {
     width: 100%;
-    margin-top: -1px; /* Prevent gap */
+    margin-top: -1px;
     margin-bottom: -1px;
     line-height: 0;
     overflow: hidden;
