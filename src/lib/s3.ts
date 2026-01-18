@@ -197,7 +197,8 @@ export async function uploadToS3Direct(buffer: Buffer, key: string, contentType:
     Key: key,
     Body: buffer,
     ContentType: contentType,
-    ACL: 'public-read', // Öffentlich lesbar machen
+    // Hinweis: ACL wird von Hetzner Object Storage nicht unterstützt
+    // Bucket ist bereits auf public-read konfiguriert
   });
 
   await getS3Client().send(command);
