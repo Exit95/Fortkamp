@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import busboy from 'busboy';
-import { uploadToS3Direct } from '../../../lib/s3';
+import { uploadToS3Direct, getPrefix } from '../../../lib/s3';
 
 export const prerender = false;
 
@@ -102,9 +102,10 @@ export const POST: APIRoute = async (context) => {
         const finalBuffer = Buffer.concat(chunks.map(c => c.buffer));
 
         // S3 Key generieren
+        const prefix = getPrefix();
         const s3Key = type && category
-          ? `${type}/${category}/${filename}`
-          : `uploads/${filename}`;
+          ? `${prefix}uploads/${type}/${category}/${filename}`
+          : `${prefix}uploads/${filename}`;
 
         // Content-Type ermitteln
         const ext = filename.split('.').pop()?.toLowerCase();

@@ -1,20 +1,10 @@
 import type { APIRoute } from 'astro';
-import { uploadToS3Direct } from '../../lib/s3';
+import { uploadToS3Direct, getPrefix } from '../../lib/s3';
 
 export const prerender = false;
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-
-// Umgebungsvariablen lesen
-const getEnv = (key: string, defaultValue: string = ''): string => {
-  // @ts-ignore
-  const metaEnvValue = typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env[key] : undefined;
-  const processEnvValue = typeof process !== 'undefined' && process.env ? process.env[key] : undefined;
-  return metaEnvValue || processEnvValue || defaultValue;
-};
-
-const getPrefix = () => getEnv('S3_PREFIX', 'galabau/');
 
 export const POST: APIRoute = async (context) => {
   try {

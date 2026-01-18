@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { deleteFileByKey } from '../../../lib/s3';
+import { deleteFileByKey, getPrefix } from '../../../lib/s3';
 import type { DeleteRequest } from '../../../lib/types';
 
 export const prerender = false;
@@ -17,8 +17,9 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Sicherheitscheck: Key muss mit dem Prefix beginnen
-    const allowedPrefixes = ['galabau/uploads/', 'uploads/'];
-    const isAllowed = allowedPrefixes.some(prefix => key.startsWith(prefix));
+    const prefix = getPrefix();
+    const allowedPrefixes = [`${prefix}uploads/`, 'galabau/uploads/', 'uploads/'];
+    const isAllowed = allowedPrefixes.some(p => key.startsWith(p));
 
     if (!isAllowed) {
       return new Response(
