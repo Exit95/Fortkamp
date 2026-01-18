@@ -1,12 +1,12 @@
 import type { APIRoute } from 'astro';
 import fs from 'fs/promises';
 import path from 'path';
-import { getJsonFromS3, saveJsonToS3, isS3Configured } from '../../lib/s3';
+import { getJsonFromS3, saveJsonToS3, isS3Configured, getPrefix } from '../../lib/s3';
 
 export const prerender = false;
 
 const SERVICES_PATH = path.join(process.cwd(), 'src/data/services.json');
-const S3_SERVICES_KEY = 'galabau/data/services.json';
+const getServicesKey = () => `${getPrefix()}data/services.json`;
 
 // Lade Default-Services aus lokaler Datei
 async function getDefaultServices(): Promise<any[]> {
@@ -25,7 +25,7 @@ export const GET: APIRoute = async () => {
     if (isS3Configured()) {
       // Versuche aus S3 zu laden
       const defaultServices = await getDefaultServices();
-      services = await getJsonFromS3(S3_SERVICES_KEY, defaultServices);
+      services = await getJsonFromS3(getServicesKey(), defaultServices);
     } else {
       // Fallback auf lokale Datei
       const data = await fs.readFile(SERVICES_PATH, 'utf-8');
@@ -51,7 +51,7 @@ export const PUT: APIRoute = async ({ request }) => {
 
     if (isS3Configured()) {
       // Speichern in S3
-      await saveJsonToS3(S3_SERVICES_KEY, services);
+      await saveJsonToS3(getServicesKey(), services);
     } else {
       // Fallback auf lokale Datei
       await fs.writeFile(SERVICES_PATH, JSON.stringify(services, null, 2), 'utf-8');

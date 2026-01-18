@@ -1,12 +1,12 @@
 import type { APIRoute } from 'astro';
 import fs from 'fs/promises';
 import path from 'path';
-import { getJsonFromS3, saveJsonToS3, isS3Configured } from '../../lib/s3';
+import { getJsonFromS3, saveJsonToS3, isS3Configured, getPrefix } from '../../lib/s3';
 
 export const prerender = false;
 
 const PROJECTS_PATH = path.join(process.cwd(), 'src/data/projects.json');
-const S3_PROJECTS_KEY = 'galabau/data/projects.json';
+const getProjectsKey = () => `${getPrefix()}data/projects.json`;
 
 // Lade Default-Projekte aus lokaler Datei
 async function getDefaultProjects(): Promise<any[]> {
@@ -25,7 +25,7 @@ export const GET: APIRoute = async () => {
     if (isS3Configured()) {
       // Versuche aus S3 zu laden
       const defaultProjects = await getDefaultProjects();
-      projects = await getJsonFromS3(S3_PROJECTS_KEY, defaultProjects);
+      projects = await getJsonFromS3(getProjectsKey(), defaultProjects);
     } else {
       // Fallback auf lokale Datei
       const data = await fs.readFile(PROJECTS_PATH, 'utf-8');
@@ -51,7 +51,7 @@ export const PUT: APIRoute = async ({ request }) => {
 
     if (isS3Configured()) {
       // Speichern in S3
-      await saveJsonToS3(S3_PROJECTS_KEY, projects);
+      await saveJsonToS3(getProjectsKey(), projects);
     } else {
       // Fallback auf lokale Datei
       await fs.writeFile(PROJECTS_PATH, JSON.stringify(projects, null, 2), 'utf-8');
