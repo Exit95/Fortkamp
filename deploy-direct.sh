@@ -9,7 +9,7 @@ echo "🚀 Direct deployment for Galabau Fortkamp..."
 IMAGE_NAME="galabau-fortkamp.de"
 TAG="latest"
 LOCAL_IMAGE="${IMAGE_NAME}:${TAG}"
-SERVER="root@10.1.9.0"
+SERVER="root@2a01:4f8:202:1129:2447:2447:1:901"
 STACK_NAME="galabau-fortkamp-de"
 
 # Step 1: Build Docker image locally
