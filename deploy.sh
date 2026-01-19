@@ -15,7 +15,8 @@ STACK_NAME="galabau-fortkamp-de"
 # Step 1: Build Docker image
 echo ""
 echo "📦 Building Docker image..."
-docker build -t ${FULL_IMAGE} .
+# BuildKit macht auf dem Server gelegentlich Probleme (Snapshot/Cache). Daher bewusst deaktiviert.
+DOCKER_BUILDKIT=0 docker build -t ${FULL_IMAGE} .
 
 # Step 2: Push to registry
 echo ""
