@@ -7,6 +7,8 @@ export const SERVICE_CATEGORIES = [
   'Pflegearbeiten',
   'Heckenschnitt',
   'Baggervermietung',
+  'Holzbau',
+  'Zaunbau',
 ] as const;
 
 export type ServiceCategory = typeof SERVICE_CATEGORIES[number];
