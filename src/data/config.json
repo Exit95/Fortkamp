@@ -2,8 +2,8 @@
   "company": {
     "name": "Galabau Fortkamp",
     "legalName": "Galabau Fortkamp",
-    "tagline": "Garten- und LandschaftsbauPlanung • Gestaltung • Pflege in Ahaus",
-    "description": "Kompetente Gartenpflege, Landschaftsbau und Winterdienst in Ahaus und Umgebung. Zuverlässig, kompetent und lokal.",
+    "tagline": "Garten- und Landschaftsbau. Planung, Gestaltung und Pflege in Ahaus",
+    "description": "Gartenpflege, Landschaftsbau und Winterdienst in Ahaus und Umgebung. Wir arbeiten für Privatkunden, Gewerbe und Wohnanlagen.",
     "founded": 2023,
     "owner": "Maximilian Fortkamp"
   },
@@ -21,18 +21,18 @@
     }
   },
   "hours": {
-    "monday": "07:00 - 18:00",
-    "tuesday": "07:00 - 18:00",
-    "wednesday": "07:00 - 18:00",
-    "thursday": "07:00 - 18:00",
-    "friday": "07:00 - 16:00",
-    "saturday": "08:00 - 16:00",
+    "monday": "07:00 bis 18:00",
+    "tuesday": "07:00 bis 18:00",
+    "wednesday": "07:00 bis 18:00",
+    "thursday": "07:00 bis 18:00",
+    "friday": "07:00 bis 16:00",
+    "saturday": "08:00 bis 16:00",
     "sunday": "Geschlossen",
     "emergency": "Winterdienst: 24/7 erreichbar"
   },
   "seo": {
-    "defaultTitle": "Galabau Fortkamp - Garten- und Landschaftsbau Ahaus",
-    "defaultDescription": "Professioneller Garten- und Landschaftsbau in Ahaus. Gartenpflege, Pflasterarbeiten, Zaunbau, Baumfällung und Winterdienst. Jetzt kostenlos beraten lassen!",
+    "defaultTitle": "Galabau Fortkamp, Garten- und Landschaftsbau in Ahaus",
+    "defaultDescription": "Garten- und Landschaftsbau in Ahaus. Gartenpflege, Pflasterarbeiten, Zaunbau, Baumarbeiten und Winterdienst. Rufen Sie an oder schreiben Sie uns.",
     "keywords": ["Galabau Ahaus", "Gartenpflege Ahaus", "Landschaftsbau Ahaus", "Winterdienst Ahaus", "Pflasterarbeiten", "Zaunbau"]
   },
   "social": {

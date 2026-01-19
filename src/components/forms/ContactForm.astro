@@ -88,7 +88,7 @@ const services = await getServices();
       class="mt-1 w-4 h-4 text-green-600 border-neutral-300 rounded focus:ring-green-500"
     />
     <label for="consent" class="text-sm text-neutral-600">
-      Ich habe die <a href="/datenschutz/" class="text-green-600 hover:underline">Datenschutzerklarung</a> gelesen und stimme der Verarbeitung meiner Daten zu. <span class="text-red-500">*</span>
+	    Ich habe die <a href="/datenschutz/" class="text-green-600 hover:underline">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zu. <span class="text-red-500">*</span>
     </label>
   </div>
   <p class="text-sm text-red-600 hidden" data-error="consent"></p>
@@ -112,8 +112,8 @@ const services = await getServices();
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
     <div>
-      <h3 class="font-semibold text-green-800">Vielen Dank fur Ihre Nachricht!</h3>
-      <p class="mt-1 text-green-700">Wir werden uns schnellstmoglich bei Ihnen melden.</p>
+	      <h3 class="font-semibold text-green-800">Vielen Dank für Ihre Nachricht!</h3>
+	      <p class="mt-1 text-green-700">Wir werden uns schnellstmöglich bei Ihnen melden.</p>
     </div>
   </div>
 </div>
@@ -133,11 +133,11 @@ const services = await getServices();
     },
     email: (value: string) => {
       if (!value.trim()) return 'Bitte geben Sie Ihre E-Mail-Adresse ein';
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Ungultige E-Mail-Adresse';
+	      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Ungültige E-Mail-Adresse';
       return '';
     },
     phone: (value: string) => {
-      if (value && !/^[\d\s\-\+\(\)]+$/.test(value)) return 'Ungultige Telefonnummer';
+	      if (value && !/^[\d\s\-\+\(\)]+$/.test(value)) return 'Ungültige Telefonnummer';
       return '';
     },
     message: (value: string) => {
@@ -146,7 +146,7 @@ const services = await getServices();
       return '';
     },
     consent: (checked: boolean) => {
-      if (!checked) return 'Bitte stimmen Sie der Datenschutzerklarung zu';
+	      if (!checked) return 'Bitte stimmen Sie der Datenschutzerklärung zu';
       return '';
     }
   };
