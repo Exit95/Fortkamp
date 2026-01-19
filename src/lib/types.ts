@@ -11,6 +11,10 @@ export const SERVICE_CATEGORIES = [
   'Zaunbau',
   'Terrassen- und Wegebau',
   'Dachbegrünung',
+  'Bepflanzung',
+  'Beleuchtung',
+  'Rasenbau und Pflege',
+  'Grau- und Grünflächen Pflege',
 ] as const;
 
 export type ServiceCategory = typeof SERVICE_CATEGORIES[number];
