@@ -6,11 +6,12 @@ set -e
 echo "🚀 Starting deployment for Galabau Fortkamp..."
 
 # Configuration
-REGISTRY="10.1.9.0:5000"
+REGISTRY="[2a01:4f8:202:1129:2447:2447:1:900]:5000"
 IMAGE_NAME="galabau-fortkamp.de"
 TAG="latest"
 FULL_IMAGE="${REGISTRY}/${IMAGE_NAME}:${TAG}"
 STACK_NAME="galabau-fortkamp-de"
+SWARM_MANAGER="root@2a01:4f8:202:1129:2447:2447:1:901"
 
 # Step 1: Build Docker image
 echo ""

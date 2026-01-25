@@ -14,7 +14,6 @@ interface Props {
     label: string;
     href: string;
   };
-  showTrustIndicators?: boolean;
   useLightRays?: boolean;
 }
 
@@ -24,7 +23,6 @@ const {
   backgroundImage,
   ctaPrimary = { label: 'Jetzt anrufen', href: `tel:${config.contact.phone}` },
   ctaSecondary = { label: 'WhatsApp schreiben', href: `https://wa.me/${config.contact.whatsapp}?text=Hallo,%20ich%20interessiere%20mich%20f%C3%BCr%20Ihre%20Leistungen.` },
-  showTrustIndicators = true,
   useLightRays = false
 } = Astro.props;
 ---
@@ -103,30 +101,6 @@ const {
           {ctaSecondary.label}
         </a>
       </div>
-
-      <!-- Trust Indicators - Responsive grid on mobile -->
-      {showTrustIndicators && (
-        <div class="grid grid-cols-1 sm:flex sm:flex-wrap gap-3 sm:gap-x-8 sm:gap-y-4 mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-white/20">
-          <div class="flex items-center gap-2 text-white">
-            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-            </svg>
-            <span class="text-sm font-medium">3 Jahre Erfahrung</span>
-          </div>
-          <div class="flex items-center gap-2 text-white">
-            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-            </svg>
-            <span class="text-sm font-medium">66+ Zufriedene Kunden</span>
-          </div>
-          <div class="flex items-center gap-2 text-white">
-            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-            </svg>
-            <span class="text-sm font-medium">Lokaler Service in Ahaus</span>
-          </div>
-        </div>
-      )}
     </div>
   </div>
 
